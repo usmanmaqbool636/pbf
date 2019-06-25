@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
 import { Link } from "react-router-dom";
-import { setUser } from '../../store/Action/userAction';
-import axios from '../../axios';
+import { setUser } from "../../store/Action/userAction";
+import axios from "../../axios";
 import {
   Grid,
   Button,
@@ -22,48 +22,39 @@ class Login extends Component {
     },
     loading: false
   };
-  componentDidMount(){
-    document.title="Login to PBF"
+  componentDidMount() {
+    document.title = "Login to PBF";
   }
 
   handleChange = evt => {
     this.setState({ [evt.target.name]: evt.target.value });
   };
 
-
   handleSubmit = () => {
     const { email, password } = this.state;
     if (!email && !password) {
       this.setState({
         errors: {
-          message: 'both fields are requried'
+          message: "both fields are requried"
         }
-      })
+      });
+    } else {
+      axios.post("/api/user/login", { email, password }).then(res => {
+        console.log(res.data);
+        if (!res.data.success) {
+          this.setState({ errors: res.data });
+        } else {
+          this.setState({ errors: {} });
+          localStorage.setItem("token", `bearer ${res.data.token}`);
+          this.props.setUser(res.data);
+          this.props.history.push("/");
+        }
+      });
     }
-    else {
-      axios.post('/api/user/login', { email, password })
-        .then(res => {
-          console.log(res.data);
-          if (!res.data.success) {
-            this.setState({ errors: res.data })
-          }
-          else {
-            this.setState({ errors: {} });
-            localStorage.setItem('token', `bearer ${res.data.token}`)
-            this.props.setUser(res.data);
-            this.props.history.push('/');
-          }
-        })
-    }
-  }
+  };
 
   render() {
-    const {
-      password,
-      email,
-      errors,
-      loading
-    } = this.state;
+    const { password, email, errors, loading } = this.state;
     console.log(errors.message);
     return (
       <Grid textAlign="center" verticalAlign="middle" className="app">
@@ -74,7 +65,6 @@ class Login extends Component {
           </Header>
           <Segment>
             <Form size="large" onSubmit={this.handleSubmit}>
-
               <Form.Input
                 fluid
                 name="email"
@@ -85,7 +75,6 @@ class Login extends Component {
                 type="email"
                 value={email}
               />
-
 
               <Form.Input
                 fluid
@@ -109,11 +98,14 @@ class Login extends Component {
             </Message>
           )}
           <Message>
-            Not have an account?  <Link to="/register">  Register </Link>
+            Not have an account? <Link to="/register"> Register </Link>
           </Message>
         </Grid.Column>
       </Grid>
     );
   }
 }
-export default connect(null, { setUser })(Login);
+export default connect(
+  null,
+  { setUser }
+)(Login);

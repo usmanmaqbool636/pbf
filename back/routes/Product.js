@@ -30,6 +30,23 @@ Router.put('/:id', login, authentic, (req, res) => {
         })
     })
 })
+Router.put('/image/:id', login, authentic, (req, res) => {
+    Product.updateOne({ _id: req.params.id }, { "$push": { "imagespath": req.body.image }, }, { "new": true, "upsert": true }, (err, doc) => {
+        if (!err) {
+           return res.status(200).json({
+                success: true,
+                message:"Image uploaded"
+            })
+        }
+        return res.json({
+            success:false,
+            message :"product not found"
+        })
+        
+    })
+    console.log(req.params.id);
+    console.log(req.body)
+})
 
 Router.post('/create', login, (req, res) => {
     const newProduct = new Product(req.body);
@@ -77,7 +94,7 @@ Router.get('/myproduct/:id', login, (req, res) => {
     Product.find({ vendor: req.user._id }, (err, doc) => {
         if (!err) {
             console.log(doc);
-            res.status(200).json({products: doc})
+            res.status(200).json({ products: doc })
         }
     })
 

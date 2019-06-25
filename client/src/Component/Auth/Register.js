@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import axios from '../../axios';
-import { setUser } from '../../store/Action/userAction';
+import axios from "../../axios";
+import { setUser } from "../../store/Action/userAction";
 import {
   Grid,
   Button,
@@ -25,32 +25,43 @@ class Register extends Component {
     loading: false
   };
   componentDidMount() {
-    document.title = "Register an Account"
+    document.title = "Register an Account";
   }
 
   handleChange = evt => {
     this.setState({ [evt.target.name]: evt.target.value });
   };
-  handleChangeRadio = (e, { role }) => this.setState({ role })
+  handleChangeRadio = (e, { role }) => this.setState({ role });
   submitHandle = () => {
-    const { username, email, password, passwordConfirmation, phone, role } = this.state;
-    const user = { username, email, password, passwordConfirmation, phone, role };
+    const {
+      username,
+      email,
+      password,
+      passwordConfirmation,
+      phone,
+      role
+    } = this.state;
+    const user = {
+      username,
+      email,
+      password,
+      passwordConfirmation,
+      phone,
+      role
+    };
 
-    axios.post('/api/user/register', user)
-      .then(res => {
-        console.log(res.data)
-        if (!res.data.success) {
-          this.setState({ errors: res.data.err })
-        }
-        else {
-          this.setState({ errors: {} });
-          localStorage.setItem('token', `bearer ${res.data.token}`)
-          this.props.setUser(res.data);
-          this.props.history.push('/');
-        }
-      })
-  }
-
+    axios.post("/api/user/register", user).then(res => {
+      console.log(res.data);
+      if (!res.data.success) {
+        this.setState({ errors: res.data.err });
+      } else {
+        this.setState({ errors: {} });
+        localStorage.setItem("token", `bearer ${res.data.token}`);
+        this.props.setUser(res.data);
+        this.props.history.push("/");
+      }
+    });
+  };
 
   render() {
     const {
@@ -63,7 +74,7 @@ class Register extends Component {
       loading,
       role
     } = this.state;
-    console.log(this.state.role)
+    console.log(this.state.role);
     return (
       <Grid textAlign="center" verticalAlign="middle" className="app">
         <Grid.Column style={{ maxWidth: 450 }}>
@@ -99,24 +110,24 @@ class Register extends Component {
                 <label>Register as:</label>
                 <Form.Field
                   control={Radio}
-                  label='Customer'
+                  label="Customer"
                   name="role"
-                  role='0'
-                  checked={role === '0'}
+                  role="0"
+                  checked={role === "0"}
                   onChange={this.handleChangeRadio}
                 />
                 <Form.Field
                   control={Radio}
-                  label='Suplier'
-                  role='1'
-                  checked={role === '1'}
+                  label="Suplier"
+                  role="1"
+                  checked={role === "1"}
                   onChange={this.handleChangeRadio}
                 />
                 <Form.Field
                   control={Radio}
-                  label='Both'
-                  role='2'
-                  checked={role === '2'}
+                  label="Both"
+                  role="2"
+                  checked={role === "2"}
                   onChange={this.handleChangeRadio}
                 />
               </Form.Group>
@@ -155,7 +166,11 @@ class Register extends Component {
                 value={passwordConfirmation}
                 error={errors.password}
               />
-              <Button color="orange" fluid size="large" loading={loading}
+              <Button
+                color="orange"
+                fluid
+                size="large"
+                loading={loading}
                 onClick={this.submitHandle}
               >
                 Submit
@@ -172,4 +187,7 @@ class Register extends Component {
   }
 }
 
-export default connect(null, { setUser })(Register);
+export default connect(
+  null,
+  { setUser }
+)(Register);
