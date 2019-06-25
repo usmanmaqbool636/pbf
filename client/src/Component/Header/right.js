@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux';
 import { Icon, Button } from 'semantic-ui-react'
 import { logout } from '../../store/Action/userAction';
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 
 class Right extends Component {
     LogoutHandler = () => {
@@ -48,11 +48,11 @@ class Right extends Component {
 
 
                         <ul className="custom-menu">
-                            <li>
-                                <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                                    <i className="fa fa-user-o" /> My Account
-    </a>
-                            </li>
+                            {!!Object.entries(this.props.user).length && (<li>
+                                <Link to="/dashboard">
+                                    <i className="fa fa-user-o" /> Dashboard
+                                </Link>
+                            </li>)}
                             <li>
                                 <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
                                     <i className="fa fa-heart-o" /> My Wishlist

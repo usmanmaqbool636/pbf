@@ -46,7 +46,8 @@ class MyProduct extends Component {
   // close = () => this.setState({ openModal: false })
   render() {
     const { products, open, message } = this.state;
-    const displayProducts = products.map(product => {
+
+    const displayProducts =  products.map(product => {
       return (
         <React.Fragment key={product._id}>
           <TransitionablePortal open={open}>
@@ -95,7 +96,7 @@ class MyProduct extends Component {
     });
     return (
       <div>
-        <Card.Group>{displayProducts}</Card.Group>
+        <Card.Group>{displayProducts }</Card.Group>
       </div>
     );
   }

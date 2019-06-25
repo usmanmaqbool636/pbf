@@ -16,7 +16,8 @@ import Register from "./Component/Auth/Register";
 import Login from "./Component/Auth/Login";
 import AddProduct from "./Component/product/addProduct";
 import ProductPage from "./Component/product/productPage";
-import DashBoared from "./Component/DashBoared/dashboared.jsx";
+import DashBoard from "./Component/DashBoard/dashboard.jsx";
+import MyProduct from './Component/DashBoard/myProduct';
 import HOC from "./HOC";
 import ProductEdit from "./Component/product/productEdit";
 class App extends Component {
@@ -63,7 +64,8 @@ class App extends Component {
           <Route exact path="/addproduct" component={AddProduct} />
         )}
 
-        <Route exact path="/dashboared" component={DashBoared} />
+        <Route exact path="/dashboard" component={DashBoard} />
+        <Route path="/dashboard/myproducts" component ={MyProduct}/>
 
         <Route path="/edit/:id" component={ProductEdit} />
         <Route

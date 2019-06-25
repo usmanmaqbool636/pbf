@@ -15,7 +15,7 @@ const left = () => {
             </div>
             {/* /Logo */}
             {/* Search */}
-            <div className="header-search">
+            {/* <div className="header-search">
                 <form>
                     <input
                         className="input search-input"
@@ -31,7 +31,7 @@ const left = () => {
                         <i className="fa fa-search" />
                     </button>
                 </form>
-            </div>
+            </div> */}
             {/* /Search */}
         </div>
     )
