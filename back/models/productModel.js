@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const User = require("./userModel");
 const { Schema } = mongoose;
+const User = require("./userModel");
 const productSchema = new Schema(
   {
     name: {
@@ -22,12 +22,12 @@ const productSchema = new Schema(
       required: true
     },
     category: {
-      type: String,
-      require: true
+      type: Schema.Types.ObjectId,
+      ref: "Category"
     },
     subcategory: {
-      type: String,
-      required: true
+      type: Schema.Types.ObjectId,
+      ref: 'Sub'
     },
     imagespath: {
       type: [String],
@@ -50,7 +50,7 @@ const productSchema = new Schema(
   },
   { timestamps: true }
 );
-productSchema.pre("save", function(next) {
+productSchema.pre("save", function (next) {
   User.updateOne(
     { _id: this.vendor },
     { $push: { myProducts: this._id } },
@@ -63,5 +63,7 @@ productSchema.pre("save", function(next) {
     }
   );
 });
+
 const Product = mongoose.model("Product", productSchema);
+
 module.exports = Product;

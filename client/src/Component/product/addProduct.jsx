@@ -5,10 +5,12 @@ import axios from "../../axios";
 import uuid from "uuid";
 import mime from "mime-types";
 import firebase from "../../firebase";
-import { Grid, Button, Form, Header, Message, Icon } from "semantic-ui-react";
+import { Grid, Button, Form, Header, Message, Icon, Dropdown } from "semantic-ui-react";
+
 
 class AddProduct extends Component {
   state = {
+    value: '',
     name: "",
     desription: "",
     price: "",
@@ -19,7 +21,8 @@ class AddProduct extends Component {
     images: [],
     imagespath: [],
     res: {},
-
+    cat: [],
+    subcat: [],
     message: "",
     storageRef: firebase.storage().ref(),
     user: this.props.currentUser,
@@ -33,8 +36,11 @@ class AddProduct extends Component {
   };
   componentDidMount() {
     document.title += "! create Product";
-    const headers = localStorage.getItem("token").split(" ")[1];
-    console.log(headers);
+    axios.get('/api/cat')
+      .then(res => {
+        this.setState({ cat: res.data })
+      })
+      .catch(err => console.log(err));
   }
 
   uploadFile = (file, metadata, i) => {
@@ -100,9 +106,22 @@ class AddProduct extends Component {
   };
 
   handleChange = evt => {
+    console.log(evt.target.name, evt.target.value);
     this.setState({ [evt.target.name]: evt.target.value });
   };
+  handleChange1 = (e, { name, value }) => {
+    this.setState({ [name]: value })
+  }
+  handleChange2 = (e, { value2 }) => this.setState({ value2 })
 
+
+  handleCategoryChange = (evt, name, { value }) => {
+    const { category } = this.state;
+    this.setState({ name: value });
+    console.log(name, category);
+
+
+  }
   imageChangeHandler = evt => {
     const { images } = this.state;
     const file = evt.target.files[0];
@@ -138,7 +157,11 @@ class AddProduct extends Component {
         console.log("err=>>>", err);
       });
   };
-
+  SubCategory = () => {
+    const { category } = this.state;
+    axios.get(`/api/sub/${category}`)
+      .then(res => this.setState({ subcat: res.data }))
+  }
   render() {
     const {
       name,
@@ -147,7 +170,8 @@ class AddProduct extends Component {
       category,
       subcategory,
       errors,
-      loading
+      loading,
+      cat, subcat, images
     } = this.state;
     return (
       <Grid container textAlign="center" container>
@@ -166,7 +190,7 @@ class AddProduct extends Component {
               onChange={this.handleChange}
               type="text"
               value={name}
-              // error={errors.username}
+            // error={errors.username}
             />
             <Form.Input
               fluid
@@ -177,7 +201,7 @@ class AddProduct extends Component {
               onChange={this.handleChange}
               type="text"
               value={desription}
-              // error={errors.email || errors.message ? true : false}
+            // error={errors.email || errors.message ? true : false}
             />
             <Form.Input
               fluid
@@ -188,10 +212,40 @@ class AddProduct extends Component {
               onChange={this.handleChange}
               type="number"
               value={price}
-              // error={errors.email || errors.message ? true : false}
+            // error={errors.email || errors.message ? true : false}
             />
-
-            <Form.Input
+            <Form.Field
+              onBlur={this.SubCategory}
+              placeholder="Category"
+              name="category"
+              control={Dropdown}
+              fluid
+              selection
+              onChange={this.handleChange1}
+              options={cat}
+              value={category}
+            />
+            {/* <Dropdown
+              fluid
+              onChange={this.handleChange1}
+              options={options}
+              placeholder='Choose an option'
+              selection
+              value={category}
+              name="category"
+            /> */}
+            <Form.Field
+              disabled={subcat.length <= 0}
+              placeholder="SubCategory"
+              name="subcategory"
+              control={Dropdown}
+              fluid
+              selection
+              onChange={this.handleChange1}
+              options={subcat}
+              value={subcategory}
+            />
+            {/* <Form.Input
               fluid
               name="category"
               // icon="lock"
@@ -200,47 +254,41 @@ class AddProduct extends Component {
               onChange={this.handleChange}
               type="string"
               value={category}
-              // error={errors.password}
-            />
-
-            <Form.Input
-              fluid
-              name="subcategory"
-              // icon="repeat"
-              // iconPosition="left"
-              placeholder="Subcategory"
-              onChange={this.handleChange}
-              type="string"
-              value={subcategory}
-              // error={errors.password}
-            />
+            // error={errors.password}
+            /> */}
             <input
               type="file"
-              className="inputfile"
+              className={`inputfile`}
               id="embedpollfileinput"
               name="0"
               onChange={this.imageChangeHandler}
             />
+
             <input
               type="file"
-              className="inputfile"
+              className="inputfile imageHide"
               id="embedpollfileinput"
               name="1"
               onChange={this.imageChangeHandler}
+              disabled={images.length > 0 ? false : true}
+
             />
             <input
               type="file"
-              className="inputfile"
+              className={`inputfile`}
               id="embedpollfileinput"
               name="2"
               onChange={this.imageChangeHandler}
+              disabled={images.length > 1 ? false : true}
             />
             <input
               type="file"
-              className="inputfile"
+              className={`inputfile`}
               id="embedpollfileinput"
               name="3"
               onChange={this.imageChangeHandler}
+              disabled={images.length > 2 ? false : true}
+
             />
 
             <Button color="orange" fluid size="large" loading={loading}>

@@ -1,10 +1,12 @@
 const express = require("express");
 const Router = express.Router();
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const { login, authentic } = require("../auth");
 
 const Product = require("../models/productModel");
 const User = require("../models/userModel");
+const Category = require('../models/category');
+const Sub = require('../models/subCategory');
 
 Router.get("/:id", (req, res) => {
   Product.findById(req.params.id).then(p => {
@@ -81,6 +83,15 @@ Router.get("/", (req, res) => {
   // res.status(200).json({
   //     success: true
   // })
+
+  // Category.find({})
+  //   .populate({
+  //     path: 'subcategory',
+  //     model: 'Sub'
+  //   })
+  //   .then(doc => res.status(200).json(doc));
+
+
   Product.find({}, (err, p) => {
     if (!err) {
       res.status(200).json({
@@ -113,4 +124,18 @@ Router.get("/myproduct/:id", login, (req, res) => {
   //         console.log(err);
   //     })
 });
+Router.post('/category/create', (req, res) => {
+  const category = new Category(req.body);
+  category.save()
+    .then(doc => res.status(200).json(doc))
+})
+Router.post('/sub/create', (req, res) => {
+  const { name, id } = req.body;
+
+  const sub = new Sub(req.body);
+  sub.save()
+    .then(doc => {
+          res.status(200).json(doc)
+      })
+})
 module.exports = Router;

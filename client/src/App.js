@@ -65,7 +65,7 @@ class App extends Component {
         )}
 
         <Route exact path="/dashboard" component={DashBoard} />
-        <Route path="/dashboard/myproducts" component ={MyProduct}/>
+        {/* <Route path="/dashboard/myproducts" component ={MyProduct}/> */}
 
         <Route path="/edit/:id" component={ProductEdit} />
         <Route

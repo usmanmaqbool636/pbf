@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 import { Tab, Sidebar, Icon, Menu, Segment, Header, Image } from "semantic-ui-react";
 import MyProduct from "./myProduct";
 const panes = [
@@ -16,7 +16,7 @@ const DashBoard = (props) => {
         color: "grey",
         inverted: true,
         fluid: true,
-        vertical: true,
+        vertical: false,
         tabular: true
       }}
       // activeIndex={props.match.params.active || 0} 
@@ -27,9 +27,15 @@ const DashBoard = (props) => {
     />
   );
 }
-// const DashBoard = () => {
+
+
+// const DashBoard = (props) => {
+//   console.log(props.match.url);
 //   return (<React.Fragment>
-//     <Sidebar as={Menu} animation='uncover' direction="left" icon='labeled' inverted vertical visible={true} width='thin'>
+
+//     <Route exat path={`${props.match.url}/myproduct`} component={MyProduct} />
+
+//     <Sidebar as={Menu} animation='uncover' direction="left" icon='labeled' inverted vertical visible width='thin'>
 //       <Link to="/">
 //         <Menu.Item as='a' >
 //           <Icon name='home' />
@@ -37,10 +43,10 @@ const DashBoard = (props) => {
 //       </Menu.Item>
 //       </Link>
 
-//       <Link to="/dashboard/myproducts">
+//       <Link to={`/${props.match.url}/myproduct`}>
 //         <Menu.Item as='a'>
 //           <Icon name='gamepad' />
-//           Games
+//           My Product
 //       </Menu.Item>
 //       </Link>
 

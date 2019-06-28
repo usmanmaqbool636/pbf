@@ -47,56 +47,128 @@ class MyProduct extends Component {
   render() {
     const { products, open, message } = this.state;
 
-    const displayProducts =  products.map(product => {
+    // const displayProducts = products.map(product => {
+    //   return (
+    //     <React.Fragment key={product._id}>
+    //       <TransitionablePortal open={open}>
+    //         <Segment
+    //           style={{
+    //             left: "45%",
+    //             position: "fixed",
+    //             top: "0%",
+    //             zIndex: 1000,
+    //             width: "15%",
+    //             backgroundColor: "gainsboro",
+    //             textAlign: "center"
+    //           }}
+    //         >
+    //           <Header>Message</Header>
+    //           <p>{message}</p>
+    //         </Segment>
+    //       </TransitionablePortal>
+    //       <Card>
+    //         <Card.Content>
+    //           <Image
+    //             floated="right"
+    //             src="https://react.semantic-ui.com/images/avatar/large/steve.jpg"
+    //           />
+    //           <Card.Header>{product.name}</Card.Header>
+    //           <Card.Meta>{product.category}</Card.Meta>
+    //           <Card.Description>{product.description}</Card.Description>
+    //         </Card.Content>
+    //         <Card.Meta textAlign="right" content={product.price} />
+    //         <Card.Content extra>
+    //           <div className="ui two buttons">
+    //             <Button basic color="green">
+    //               <Link to={`/edit/${product._id}`}>Edit</Link>
+    //             </Button>
+    //             <Button
+    //               basic
+    //               color="red"
+    //               onClick={() => this.DeleteHandler(product._id)}
+    //             >
+    //               Delete
+    //             </Button>
+    //           </div>
+    //         </Card.Content>
+    //       </Card>
+    //     </React.Fragment>
+    //   );
+    // });
+
+
+
+    const displayProducts = products.map(product => {
       return (
-        <React.Fragment key={product._id}>
-          <TransitionablePortal open={open}>
-            <Segment
-              style={{
-                left: "45%",
-                position: "fixed",
-                top: "0%",
-                zIndex: 1000,
-                width: "15%",
-                backgroundColor: "gainsboro",
-                textAlign: "center"
-              }}
-            >
-              <Header>Message</Header>
-              <p>{message}</p>
-            </Segment>
-          </TransitionablePortal>
-          <Card>
-            <Card.Content>
-              <Image
-                floated="right"
-                src="https://react.semantic-ui.com/images/avatar/large/steve.jpg"
-              />
-              <Card.Header>{product.name}</Card.Header>
-              <Card.Meta>{product.category}</Card.Meta>
-              <Card.Description>{product.description}</Card.Description>
-            </Card.Content>
-            <Card.Content extra>
-              <div className="ui two buttons">
-                <Button basic color="green">
-                  <Link to={`/edit/${product._id}`}>Edit</Link>
-                </Button>
-                <Button
-                  basic
-                  color="red"
-                  onClick={() => this.DeleteHandler(product._id)}
-                >
-                  Delete
-                </Button>
-              </div>
-            </Card.Content>
-          </Card>
-        </React.Fragment>
-      );
-    });
+        <div
+          className="product product-single slick-slide slick-active"
+          tabIndex={-1}
+          role="tabpanel"
+          id="slick-slide11"
+          style={{ width: 263 }}
+          data-slick-index={1}
+          aria-hidden="false"
+        >
+          <div className="product-thumb">
+            <div className="product-label">
+              <span className="sale">-20%</span>
+            </div>
+            <ul className="product-countdown">
+              <li>
+                <span>00 H</span>
+              </li>
+              <li>
+                <span>00 M</span>
+              </li>
+              <li>
+                <span>00 S</span>
+              </li>
+            </ul>
+            <button className="main-btn quick-view" tabIndex={-1}>
+              <i className="fa fa-search-plus" /> Quick view
+                        </button>
+            <img src="https://react.semantic-ui.com/images/avatar/large/steve.jpg" alt="" />
+          </div>
+          <div className="product-body">
+            <h3 className="product-price">
+              $32.50 <del className="product-old-price">$45.00</del>
+            </h3>
+            <div className="product-rating">
+              <i className="fa fa-star" />
+              <i className="fa fa-star" />
+              <i className="fa fa-star" />
+              <i className="fa fa-star" />
+              <i className="fa fa-star-o empty" />
+            </div>
+            <h2 className="product-name">
+              <a
+                href="file:///C:/Users/usman/Desktop/e-shop/index.html#"
+                tabIndex={-1}
+              >
+                Product Name Goes Here
+                          </a>
+            </h2>
+            <div className="product-btns">
+              <button className="main-btn icon-btn" tabIndex={-1}>
+                <i className="fa fa-heart" />
+              </button>
+              <button className="main-btn icon-btn" tabIndex={-1}>
+                <i className="fa fa-exchange" />
+              </button>
+              <button
+                className="primary-btn add-to-cart"
+                tabIndex={-1}
+              >
+                <i className="fa fa-shopping-cart" /> Add to Cart
+                          </button>
+            </div>
+          </div>
+        </div>
+      )
+    })
     return (
       <div>
-        <Card.Group>{displayProducts }</Card.Group>
+        <Card.Group>{displayProducts}</Card.Group>
       </div>
     );
   }
