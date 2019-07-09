@@ -1,546 +1,108 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-// import { Icon, Button } from 'semantic-ui-react';
-import { toogleSideBar } from '../../store/Action/responsiveAction';
+import { Icon, Button } from 'semantic-ui-react';
+import "./navigation.css"
+import { toogleSideBar, responsiveNave } from '../../store/Action/responsiveAction';
+import { setCatSub, setCat } from '../../store/Action/productAction';
+import { Link, withRouter } from 'react-router-dom';
+import axios from '../../axios';
 class Navigation extends Component {
   state = {
-    res_nav: false
+    res_nav: false,
+    category: []
   }
+  componentDidMount() {
+    axios.get("api/sub")
+      .then(res => {
+        this.setState({ category: res.data })
+        this.props.setCat(res.data)
+
+        console.log(res.data)
+      })
+  }
+
+  toogleSideBar = () => {
+    this.props.toogleSideBar()
+  }
+  over = (evt) => {
+    evt.target.parentNode.classList.add("open");
+    this.setState({ expanded: true })
+
+  }
+  down = (evt) => {
+    evt.target.parentNode.classList = "dropdown side-dropdown";
+    this.setState({ expanded: false })
+
+  }
+
   render() {
+    const { open } = this.props;
+    const { category, expanded } = this.state;
+    const displaycategory = category.map(cat => {
+      return (
+        <li className="dropdown side-dropdown" key={cat._id}>
+          <Link
+            to={`/${cat.text}`}
+            className="dropdown-toggle"
+            // onMouseOver={this.over}
+            // onMouseOut={this.down}
+            // onClick={() => this.props.history.push(`/${cat.text}`)}
+            data-toggle="dropdown"
+            aria-expanded={expanded}
+          >
+            {cat.text} <Icon name='angle right' />
+          </Link>
+          <div className="custom-menu">
+            <div className="row">
+              <div className="col-md-4">
+                <ul className="list-links">
+                  <li>
+                    <h3 className="list-links-title">Sub Categories</h3>
+                  </li>
+                  {cat.subcategory.map(sub => {
+                    const result = cat.text.split(' ').join('-')
+                    const result1 = sub.text.split(' ').join('-')
+                    return (
+                      <li
+                        key={sub._id}
+                      // onClick={()=>this.props.history.push(`/products/${result}/${result1}`)}
+
+                      >
+                        <Link to={`/products/${result}/${result1}`}
+
+                        >
+                          {sub.text}
+                        </Link>
+
+                      </li>
+                    )
+                  })}
+                </ul>
+                <hr />
+              </div>
+            </div>
+          </div>
+        </li>)
+    })
     return (
-      <div id="navigation" onClick={this.props.toogleSideBar}
-      className={this.props.open ? "shadow" : ""}
+      <div id="navigation"
+        onClick={this.toogleSideBar}
+        className={this.props.sidebar ? "shadow" : ""}
       >
         {/* container */}
         < div className="container">
-          <div id="responsive-nav" className={this.props.open ? "open" : ""}>
+          <div onClick={this.toogleSideBar} id="responsive-nav" className={this.props.sidebar ? "open shadow" : ""}>
             {/* category nav */}
             <div className="category-nav">
               <span className="category-header">
-                Categories <i className="fa fa-list" />
+                Categories <i
+                  className="fa fa-list"
+                  onClick={this.props.responsiveNave} />
               </span>
-              <ul className="category-list" 
-              // style={{display:'none'}}
+              <ul className={`category-list`}
+                style={{ display: open ? "block" : "none" }}
               >
-                <li className="dropdown side-dropdown">
-                  <a
-                    href="/"
-                    className="dropdown-toggle"
-                    data-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Women’s Clothing <i className="fa fa-angle-right" />
-                  </a>
-                  <div className="custom-menu">
-                    <div className="row">
-                      <div className="col-md-4">
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr className="hidden-md hidden-lg" />
-                      </div>
-                      <div className="col-md-4">
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr className="hidden-md hidden-lg" />
-                      </div>
-                      <div className="col-md-4">
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                    <div className="row hidden-sm hidden-xs">
-                      <div className="col-md-12">
-                        <hr />
-                        <a
-                          className="banner banner-1"
-                          href="file:///C:/Users/usman/Desktop/e-shop/index.html#"
-                        >
-                          <img
-                            src="file:///C:/Users/usman/Desktop/e-shop/img/banner05.jpg"
-                            alt=""
-                          />
-                          <div className="banner-caption text-center">
-                            <h2 className="white-color">NEW COLLECTION</h2>
-                            <h3 className="white-color font-weak">HOT DEAL</h3>
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                    Men’s Clothing
-                </a>
-                </li>
-                <li className="dropdown side-dropdown">
-                  <a
-                    href="/"
-                    className="dropdown-toggle"
-                    data-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Phones &amp; Accessories <i className="fa fa-angle-right" />
-                  </a>
-                  <div className="custom-menu">
-                    <div className="row">
-                      <div className="col-md-4">
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr />
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr className="hidden-md hidden-lg" />
-                      </div>
-                      <div className="col-md-4">
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr />
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                      </div>
-                      <div className="col-md-4 hidden-sm hidden-xs">
-                        <a
-                          className="banner banner-2"
-                          href="file:///C:/Users/usman/Desktop/e-shop/index.html#"
-                        >
-                          <img
-                            src="file:///C:/Users/usman/Desktop/e-shop/img/banner04.jpg"
-                            alt=""
-                          />
-                          <div className="banner-caption">
-                            <h3 className="white-color">
-                              NEW
-                            <br />
-                              COLLECTION
-                          </h3>
-                          </div>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                    Computer &amp; Office
-                </a>
-                </li>
-                <li>
-                  <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                    Consumer Electronics
-                </a>
-                </li>
-                <li className="dropdown side-dropdown">
-                  <a
-                    href="/"
-                    className="dropdown-toggle"
-                    data-toggle="dropdown"
-                    aria-expanded="true"
-                  >
-                    Jewelry &amp; Watches <i className="fa fa-angle-right" />
-                  </a>
-                  <div className="custom-menu">
-                    <div className="row">
-                      <div className="col-md-4">
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr />
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr className="hidden-md hidden-lg" />
-                      </div>
-                      <div className="col-md-4">
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr />
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr className="hidden-md hidden-lg" />
-                      </div>
-                      <div className="col-md-4">
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                        <hr />
-                        <ul className="list-links">
-                          <li>
-                            <h3 className="list-links-title">Categories</h3>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Women’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Men’s Clothing
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Phones &amp; Accessories
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Jewelry &amp; Watches
-                          </a>
-                          </li>
-                          <li>
-                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                              Bags &amp; Shoes
-                          </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                    Bags &amp; Shoes
-                </a>
-                </li>
-                <li>
-                  <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                    View All
-                </a>
-                </li>
+                {displaycategory}
               </ul>
             </div>
             {/* /category nav */}
@@ -551,16 +113,16 @@ class Navigation extends Component {
               </span>
               <ul className="menu-list">
                 <li>
-                  <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
+                  <Link to="/">
                     Home
-                </a>
+                </Link>
                 </li>
-                <li>
+                {/* <li>
                   <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
                     Shop
                 </a>
-                </li>
-                <li className="dropdown mega-dropdown">
+                </li> */}
+                {/* <li className="dropdown mega-dropdown">
                   <a
                     href="/"
                     className="dropdown-toggle"
@@ -689,8 +251,8 @@ class Navigation extends Component {
                       </div>
                     </div>
                   </div>
-                </li>
-                <li className="dropdown mega-dropdown full-width">
+                </li> */}
+                {/* <li className="dropdown mega-dropdown full-width">
                   <a
                     className="dropdown-toggle"
                     data-toggle="dropdown"
@@ -897,8 +459,8 @@ class Navigation extends Component {
                       </div>
                     </div>
                   </div>
-                </li>
-                <li>
+                </li> */}
+                {/* <li>
                   <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
                     Sales
                 </a>
@@ -934,7 +496,7 @@ class Navigation extends Component {
                     </a>
                     </li>
                   </ul>
-                </li>
+                </li> */}
               </ul>
             </div>
             {/* menu nav */}
@@ -948,7 +510,7 @@ class Navigation extends Component {
 }
 const mapStateToProps = (state) => {
   return {
-    open: state.responsive.sidebar
+    sidebar: state.responsive.sidebar
   }
 }
-export default connect(mapStateToProps, { toogleSideBar })(Navigation);
+export default withRouter(connect(mapStateToProps, { toogleSideBar, responsiveNave, setCatSub, setCat })(Navigation));

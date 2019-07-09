@@ -6,3 +6,8 @@ export const toogleSideBar = () => {
         type: actionTypes.TOOGLE_SIDEBAR
     }
 }
+export const responsiveNave = () => {
+    return {
+        type: actionTypes.RESPONSIVE_NAVE
+    }
+}

@@ -1,15 +1,87 @@
 import React, { Component } from 'react'
+// import {} from 'semantic-ui-react';
 import Aside from './aside/Aside';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import axios from '../../axios';
+import { setCatSub } from '../../store/Action/productAction';
+import Product from './product';
 
 class ProductPage extends Component {
+    state = {
+        category: [],
+        selected_cat: {},
+        products: [],
+        range: [],
+        filterProduct: [],
+        gender: ''
+    }
+
+    componentWillReceiveProps() {
+        this.getCategory();
+    }
+    componentDidMount() {
+        this.getCategory();
+    }
+    getCategory = () => {
+        axios.get("/api/sub")
+            .then(res => {
+                const { category, sub } = this.props.match.params;
+                this.setState({ category: res.data })
+                this.state.category.forEach(c => {
+                    if (c.text === category.split('-').join(' '))
+                        c.subcategory.forEach(subcat => {
+                            if (subcat.text === sub.split('-').join(' ')) {
+                                this.setState({ selected_cat: subcat })
+                                this.getProduct();
+                            }
+                        })
+                })
+            })
+    }
+    getProduct = () => {
+        const { category, _id } = this.state.selected_cat;
+        console.log('this.getProduct')
+        axios.get(`/api/product/${category}/${_id}`)
+            .then(res => {
+                this.setState({ products: res.data, filterProduct: res.data })
+                console.log(res.data);
+            })
+    }
+    FilterChange = (value) => {
+        this.setState({ range: value })
+        const { products, range } = this.state;
+        const filterProduct = products.filter(p => {
+            return p.price > range[0] && p.price < range[1]
+        })
+        this.setState({filterProduct})
+    }
+    handleChange = (e, { name, value }) => {
+        this.setState({ [name]: value })
+
+    }
     render() {
+        const { products,filterProduct } = this.state;
+        console.log(filterProduct);
+        const displayProduct = filterProduct.map((p, i) => {
+            return <Product {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
+        })
         return (
             <div className="section">
+                {/* <div class="ui segment">
+                    <div id="double" class="ui double range"></div>
+                    <p id="display-d"></p>
+                </div> */}
                 {/* container */}
                 <div className="container">
                     {/* row */}
                     <div className="row">
-                        <Aside />
+                        <Aside
+                            value={this.state.range}
+                            FilterChange={this.FilterChange}
+                            handleChange={this.handleChange}
+                            gender={this.state.gender}
+                        />
                         {/* MAIN */}
                         <div id="main" className="col-md-9">
                             {/* store top filter */}
@@ -67,385 +139,9 @@ class ProductPage extends Component {
                             {/* STORE */}
                             <div id="store">
                                 {/* row */}
+
                                 <div className="row">
-                                    {/* Product Single */}
-                                    <div className="col-md-4 col-sm-6 col-xs-6">
-                                        <div className="product product-single">
-                                            <div className="product-thumb">
-                                                <div className="product-label">
-                                                    <span>New</span>
-                                                    <span className="sale">-20%</span>
-                                                </div>
-                                                <button className="main-btn quick-view">
-                                                    <i className="fa fa-search-plus" /> Quick view
-                  </button>
-                                                <img src="./img/product01.jpg" alt />
-                                            </div>
-                                            <div className="product-body">
-                                                <h3 className="product-price">
-                                                    $32.50{" "}
-                                                    <del className="product-old-price">$45.00</del>
-                                                </h3>
-                                                <div className="product-rating">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o empty" />
-                                                </div>
-                                                <h2 className="product-name">
-                                                    <a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                                <div className="product-btns">
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-heart" />
-                                                    </button>
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-exchange" />
-                                                    </button>
-                                                    <button className="primary-btn add-to-cart">
-                                                        <i className="fa fa-shopping-cart" /> Add to
-                                                        Cart
-                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* /Product Single */}
-                                    {/* Product Single */}
-                                    <div className="col-md-4 col-sm-6 col-xs-6">
-                                        <div className="product product-single">
-                                            <div className="product-thumb">
-                                                <button className="main-btn quick-view">
-                                                    <i className="fa fa-search-plus" /> Quick view
-                  </button>
-                                                <img src="./img/product02.jpg" alt />
-                                            </div>
-                                            <div className="product-body">
-                                                <h3 className="product-price">$32.50</h3>
-                                                <div className="product-rating">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o empty" />
-                                                </div>
-                                                <h2 className="product-name">
-                                                    <a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                                <div className="product-btns">
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-heart" />
-                                                    </button>
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-exchange" />
-                                                    </button>
-                                                    <button className="primary-btn add-to-cart">
-                                                        <i className="fa fa-shopping-cart" /> Add to
-                                                        Cart
-                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* /Product Single */}
-                                    <div className="clearfix visible-sm visible-xs" />
-                                    {/* Product Single */}
-                                    <div className="col-md-4 col-sm-6 col-xs-6">
-                                        <div className="product product-single">
-                                            <div className="product-thumb">
-                                                <div className="product-label">
-                                                    <span>New</span>
-                                                    <span className="sale">-20%</span>
-                                                </div>
-                                                <button className="main-btn quick-view">
-                                                    <i className="fa fa-search-plus" /> Quick view
-                  </button>
-                                                <img src="./img/product03.jpg" alt />
-                                            </div>
-                                            <div className="product-body">
-                                                <h3 className="product-price">
-                                                    $32.50{" "}
-                                                    <del className="product-old-price">$45.00</del>
-                                                </h3>
-                                                <div className="product-rating">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o empty" />
-                                                </div>
-                                                <h2 className="product-name">
-                                                    <a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                                <div className="product-btns">
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-heart" />
-                                                    </button>
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-exchange" />
-                                                    </button>
-                                                    <button className="primary-btn add-to-cart">
-                                                        <i className="fa fa-shopping-cart" /> Add to
-                                                        Cart
-                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* /Product Single */}
-                                    <div className="clearfix visible-md visible-lg" />
-                                    {/* Product Single */}
-                                    <div className="col-md-4 col-sm-6 col-xs-6">
-                                        <div className="product product-single">
-                                            <div className="product-thumb">
-                                                <div className="product-label">
-                                                    <span>New</span>
-                                                </div>
-                                                <button className="main-btn quick-view">
-                                                    <i className="fa fa-search-plus" /> Quick view
-                  </button>
-                                                <img src="./img/product04.jpg" alt />
-                                            </div>
-                                            <div className="product-body">
-                                                <h3 className="product-price">$32.50</h3>
-                                                <div className="product-rating">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o empty" />
-                                                </div>
-                                                <h2 className="product-name">
-                                                    <a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                                <div className="product-btns">
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-heart" />
-                                                    </button>
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-exchange" />
-                                                    </button>
-                                                    <button className="primary-btn add-to-cart">
-                                                        <i className="fa fa-shopping-cart" /> Add to
-                                                        Cart
-                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* /Product Single */}
-                                    <div className="clearfix visible-sm visible-xs" />
-                                    {/* Product Single */}
-                                    <div className="col-md-4 col-sm-6 col-xs-6">
-                                        <div className="product product-single">
-                                            <div className="product-thumb">
-                                                <div className="product-label">
-                                                    <span>New</span>
-                                                </div>
-                                                <button className="main-btn quick-view">
-                                                    <i className="fa fa-search-plus" /> Quick view
-                  </button>
-                                                <img src="./img/product05.jpg" alt />
-                                            </div>
-                                            <div className="product-body">
-                                                <h3 className="product-price">$32.50</h3>
-                                                <div className="product-rating">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o empty" />
-                                                </div>
-                                                <h2 className="product-name">
-                                                    <a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                                <div className="product-btns">
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-heart" />
-                                                    </button>
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-exchange" />
-                                                    </button>
-                                                    <button className="primary-btn add-to-cart">
-                                                        <i className="fa fa-shopping-cart" /> Add to
-                                                        Cart
-                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* /Product Single */}
-                                    {/* Product Single */}
-                                    <div className="col-md-4 col-sm-6 col-xs-6">
-                                        <div className="product product-single">
-                                            <div className="product-thumb">
-                                                <div className="product-label">
-                                                    <span>New</span>
-                                                    <span className="sale">-20%</span>
-                                                </div>
-                                                <button className="main-btn quick-view">
-                                                    <i className="fa fa-search-plus" /> Quick view
-                  </button>
-                                                <img src="./img/product06.jpg" alt />
-                                            </div>
-                                            <div className="product-body">
-                                                <h3 className="product-price">
-                                                    $32.50{" "}
-                                                    <del className="product-old-price">$45.00</del>
-                                                </h3>
-                                                <div className="product-rating">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o empty" />
-                                                </div>
-                                                <h2 className="product-name">
-                                                    <a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                                <div className="product-btns">
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-heart" />
-                                                    </button>
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-exchange" />
-                                                    </button>
-                                                    <button className="primary-btn add-to-cart">
-                                                        <i className="fa fa-shopping-cart" /> Add to
-                                                        Cart
-                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* /Product Single */}
-                                    <div className="clearfix visible-md visible-lg visible-sm visible-xs" />
-                                    {/* Product Single */}
-                                    <div className="col-md-4 col-sm-6 col-xs-6">
-                                        <div className="product product-single">
-                                            <div className="product-thumb">
-                                                <div className="product-label">
-                                                    <span>New</span>
-                                                    <span className="sale">-20%</span>
-                                                </div>
-                                                <button className="main-btn quick-view">
-                                                    <i className="fa fa-search-plus" /> Quick view
-                  </button>
-                                                <img src="./img/product07.jpg" alt />
-                                            </div>
-                                            <div className="product-body">
-                                                <h3 className="product-price">
-                                                    $32.50{" "}
-                                                    <del className="product-old-price">$45.00</del>
-                                                </h3>
-                                                <div className="product-rating">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o empty" />
-                                                </div>
-                                                <h2 className="product-name">
-                                                    <a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                                <div className="product-btns">
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-heart" />
-                                                    </button>
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-exchange" />
-                                                    </button>
-                                                    <button className="primary-btn add-to-cart">
-                                                        <i className="fa fa-shopping-cart" /> Add to
-                                                        Cart
-                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* /Product Single */}
-                                    {/* Product Single */}
-                                    <div className="col-md-4 col-sm-6 col-xs-6">
-                                        <div className="product product-single">
-                                            <div className="product-thumb">
-                                                <button className="main-btn quick-view">
-                                                    <i className="fa fa-search-plus" /> Quick view
-                  </button>
-                                                <img src="./img/product08.jpg" alt />
-                                            </div>
-                                            <div className="product-body">
-                                                <h3 className="product-price">$32.50</h3>
-                                                <div className="product-rating">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o empty" />
-                                                </div>
-                                                <h2 className="product-name">
-                                                    <a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                                <div className="product-btns">
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-heart" />
-                                                    </button>
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-exchange" />
-                                                    </button>
-                                                    <button className="primary-btn add-to-cart">
-                                                        <i className="fa fa-shopping-cart" /> Add to
-                                                        Cart
-                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* /Product Single */}
-                                    <div className="clearfix visible-sm visible-xs" />
-                                    {/* Product Single */}
-                                    <div className="col-md-4 col-sm-6 col-xs-6">
-                                        <div className="product product-single">
-                                            <div className="product-thumb">
-                                                <div className="product-label">
-                                                    <span className="sale">-20%</span>
-                                                </div>
-                                                <button className="main-btn quick-view">
-                                                    <i className="fa fa-search-plus" /> Quick view
-                  </button>
-                                                <img src="./img/product01.jpg" alt />
-                                            </div>
-                                            <div className="product-body">
-                                                <h3 className="product-price">
-                                                    $32.50{" "}
-                                                    <del className="product-old-price">$45.00</del>
-                                                </h3>
-                                                <div className="product-rating">
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star" />
-                                                    <i className="fa fa-star-o empty" />
-                                                </div>
-                                                <h2 className="product-name">
-                                                    <a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                                <div className="product-btns">
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-heart" />
-                                                    </button>
-                                                    <button className="main-btn icon-btn">
-                                                        <i className="fa fa-exchange" />
-                                                    </button>
-                                                    <button className="primary-btn add-to-cart">
-                                                        <i className="fa fa-shopping-cart" /> Add to
-                                                        Cart
-                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {/* /Product Single */}
+                                    {displayProduct}
                                 </div>
                                 {/* /row */}
                             </div>
@@ -513,4 +209,10 @@ class ProductPage extends Component {
         )
     }
 }
-export default ProductPage;
+const mapDispatchToProps = (state) => {
+    // console.log(state.product.category)
+    return {
+        category: state.product.category
+    }
+}
+export default withRouter(connect(mapDispatchToProps, { setCatSub })(ProductPage));

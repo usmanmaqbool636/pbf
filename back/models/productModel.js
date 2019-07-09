@@ -7,7 +7,7 @@ const productSchema = new Schema(
       type: String,
       require: true,
       maxlength: 200,
-      minlength: 10
+      minlength: 5
     },
     price: {
       type: Number,
@@ -37,7 +37,7 @@ const productSchema = new Schema(
     specification: {
       type: String
     },
-    brand: {},
+    brand: String,
     review: {
       rating: String,
       comments: [

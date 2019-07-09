@@ -15,11 +15,13 @@ import Section4 from "./Component/Section4/index";
 import Register from "./Component/Auth/Register";
 import Login from "./Component/Auth/Login";
 import AddProduct from "./Component/product/addProduct";
-import ProductPage from "./Component/product/productPage";
+import Products from "./Component/product/productPage";
+import SingleProduct from './Component/product/singleProduct';
 import DashBoard from "./Component/DashBoard/dashboard.jsx";
 import MyProduct from './Component/DashBoard/myProduct';
 import HOC from "./HOC";
 import ProductEdit from "./Component/product/productEdit";
+import CheckOut from './Component/Checkout/chackout';
 class App extends Component {
   componentDidMount() {
     const token = localStorage.getItem("token");
@@ -30,7 +32,8 @@ class App extends Component {
     }
   }
   render() {
-    const { user } = this.props;
+    const { user, open } = this.props;
+    console.log(open);
     return (
       <Switch>
         <Route
@@ -38,11 +41,9 @@ class App extends Component {
           path="/"
           render={() => {
             return (
-              <HOC>
+              <HOC open={true}>
                 <Home />
-                <Section1 />
                 <Section2 />
-                <Section3 />
                 <Section4 />
               </HOC>
             );
@@ -53,35 +54,55 @@ class App extends Component {
 
         <Route
           exact
-          path="/product"
+          path="/products/:category/:sub?"
           render={() => (
-            <HOC>
-              <ProductPage />
+            <HOC open={open} >
+              <Products />
             </HOC>
           )}
         />
+        {/* <Route
+          exact
+          path="/products/:category/:sub?"
+          component={}
+        /> */}
         {(user.role === 1 || user.role === 2) && (
           <Route exact path="/addproduct" component={AddProduct} />
         )}
+        <Route exact path="/product/:id" render={() => (
+          <HOC open={open}>
+            <SingleProduct />
+          </HOC>
+        )
+        } />
 
         <Route exact path="/dashboard" component={DashBoard} />
         {/* <Route path="/dashboard/myproducts" component ={MyProduct}/> */}
 
         <Route path="/edit/:id" component={ProductEdit} />
+
+        <Route path="/checkout" render={() => (
+          <HOC open={open}>
+            <CheckOut />
+          </HOC>
+        )} />
+
         <Route
           render={() => (
-            <HOC>
+            <HOC open={open}>
               <h1> opps Page Not Found</h1>
             </HOC>
           )}
         />
+
       </Switch>
     );
   }
 }
 const mapDispatchTopProps = state => {
   return {
-    user: state.user.user
+    user: state.user.user,
+    open: state.responsive.responsiveNave
   };
 };
 export default withRouter(

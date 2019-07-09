@@ -1,5 +1,6 @@
 import React from 'react'
 import logo from "../../Assests/img/logo.png";
+// import logo from '../../Assests/img/logo.jpg'
 
 const left = () => {
     return (

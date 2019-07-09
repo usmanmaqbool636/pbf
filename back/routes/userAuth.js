@@ -1,7 +1,7 @@
 const express = require("express");
 const Router = express.Router();
 const User = require("../models/userModel");
-
+const { login } = require('../auth/index');
 Router.post("/register", (req, res) => {
   const user = new User(req.body);
   token = user.assignToken();
@@ -58,4 +58,22 @@ Router.post("/login", (req, res) => {
     .catch(err => console.log("==>>", err));
 });
 
+Router.get('/cart/:id', login, (req, res) => {
+  User.find({ _id: req.params.id})
+    .select('cart')
+    .populate({ path: "cart", model: "Product" })
+    .then(docs => {
+      res.status(200).json(docs);
+    })
+})
+Router.put('/cart/:id', login, (req, res) => {
+  User.updateOne({ _id: req.user._id }, { $pull: { cart: req.params.id } }, (err, doc) => {
+    if (!err) {
+      res.status(200).json({
+        success: true,
+        doc
+      })
+    }
+  })
+})
 module.exports = Router;

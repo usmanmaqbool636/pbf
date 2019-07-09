@@ -1,6 +1,10 @@
-import React from 'react'
+import React from 'react';
+import { Slider } from 'react-semantic-ui-range';
+import { Label, Radio, List } from 'semantic-ui-react';
 
-export default function aside() {
+
+
+export default function aside(props) {
     return (
         <div id="aside" className="col-md-3">
             {/* aside widget */}
@@ -79,7 +83,19 @@ export default function aside() {
             {/* aside widget */}
             <div className="aside">
                 <h3 className="aside-title">Filter by Price</h3>
-                <div id="price-slider" />
+
+                <Slider multiple color="red" settings={{
+                    start: [2, 4],
+                    min: 0,
+                    max: 20000,
+                    step: 1,
+                    onChange: props.FilterChange
+                }}
+                 />
+
+                <Label color="red">{props.value[0]}</Label>
+                {"--"}
+                <Label color="red">{props.value[1]}</Label>
             </div>
             {/* aside widget */}
             {/* aside widget */}
@@ -148,13 +164,37 @@ export default function aside() {
             {/* aside widget */}
             <div className="aside">
                 <h3 className="aside-title">Filter by Gender</h3>
+
                 <ul className="list-links">
-                    <li className="active">
-                        <a href="#">Men</a>
-                    </li>
-                    <li>
-                        <a href="#">Women</a>
-                    </li>
+                    <List>
+                        <List.Item>
+                            <Radio
+                                label='Men'
+                                name='gender'
+                                value='men'
+                                checked={props.gender === 'men'}
+                                onChange={props.handleChange}
+                            />
+                        </List.Item>
+                        <List.Item>
+                            <Radio
+                                label='Women'
+                                name='gender'
+                                value='women'
+                                checked={props.gender === 'women'}
+                                onChange={props.handleChange}
+                            />
+                        </List.Item>
+                        <List.Item>
+                            <Radio
+                                label='Both'
+                                name='gender'
+                                value='both'
+                                checked={props.gender === 'both'}
+                                onChange={props.handleChange}
+                            />
+                        </List.Item>
+                    </List>
                 </ul>
             </div>
             {/* /aside widget */}

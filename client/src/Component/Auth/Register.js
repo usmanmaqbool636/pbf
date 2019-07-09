@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import axios from "../../axios";
 import { setUser } from "../../store/Action/userAction";
+import jwt from 'jsonwebtoken';
 import {
   Grid,
   Button,
@@ -26,6 +27,13 @@ class Register extends Component {
   };
   componentDidMount() {
     document.title = "Register an Account";
+    const token = localStorage.getItem("token");
+    if (token) {
+      const user = jwt.decode(token.split(" ")[1]);
+      user.token = token;
+      this.props.setUser(user);
+      this.props.history.push('/');
+    }
   }
 
   handleChange = evt => {

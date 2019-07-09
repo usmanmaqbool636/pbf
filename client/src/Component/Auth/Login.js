@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import { setUser } from "../../store/Action/userAction";
 import axios from "../../axios";
+import jwt from 'jsonwebtoken';
+
 import {
   Grid,
   Button,
@@ -24,6 +26,14 @@ class Login extends Component {
   };
   componentDidMount() {
     document.title = "Login to PBF";
+    const token = localStorage.getItem("token");
+    if (token) {
+      const user = jwt.decode(token.split(" ")[1]);
+      user.token = token;
+      this.props.setUser(user);
+      this.props.history.push('/');
+    }
+
   }
 
   handleChange = evt => {

@@ -16,6 +16,7 @@ class AddProduct extends Component {
     price: "",
     category: "",
     subcategory: "",
+    brand:'',
     errors: {},
     loading: false,
     images: [],
@@ -106,7 +107,6 @@ class AddProduct extends Component {
   };
 
   handleChange = evt => {
-    console.log(evt.target.name, evt.target.value);
     this.setState({ [evt.target.name]: evt.target.value });
   };
   handleChange1 = (e, { name, value }) => {
@@ -135,7 +135,8 @@ class AddProduct extends Component {
       price,
       category,
       subcategory,
-      images
+      images,
+      brand
     } = this.state;
     images.forEach((file, i) => {
       const metadata = { contentType: mime.lookup(file.name) };
@@ -146,7 +147,7 @@ class AddProduct extends Component {
     axios
       .post(
         "/api/product/create",
-        { name, price, desription, category, subcategory },
+        { name, price, desription, category, subcategory,brand },
         { headers }
       )
       .then(res => {
@@ -195,8 +196,6 @@ class AddProduct extends Component {
             <Form.Input
               fluid
               name="desription"
-              // icon="mail"
-              // iconPosition="left"
               placeholder="Desription"
               onChange={this.handleChange}
               type="text"
@@ -225,6 +224,7 @@ class AddProduct extends Component {
               options={cat}
               value={category}
             />
+
             {/* <Dropdown
               fluid
               onChange={this.handleChange1}
@@ -244,6 +244,17 @@ class AddProduct extends Component {
               onChange={this.handleChange1}
               options={subcat}
               value={subcategory}
+            />
+            <Form.Field
+              // onBlur={this.SubCategory}
+              placeholder="Brands"
+              name="brand"
+              control={Dropdown}
+              fluid
+              selection
+              onChange={this.handleChange1}
+              options={[{text:'nike',key:"nike"},{text:'addidas',key:"addidas"},{text:'polo',key:"polo"},{text:'sumsang',key:"sumsang"},{text:'huawei',key:"huawei"}]}
+              value={category}
             />
             {/* <Form.Input
               fluid

@@ -3,10 +3,10 @@ const jwt = require('jsonwebtoken');
 const Product = require('../models/productModel');
 
 const login = (req, res, next) => {
-    console.log('login');
     if (req.headers.authorization) {
         jwt.verify(req.headers.authorization.split(' ')[1], process.env.SECRETORKEY, (err, decode) => {
             if (!decode) {
+                console.log('login');  
                 return res.json({
                     success: false,
                     message: 'please login first'

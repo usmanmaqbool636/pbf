@@ -57,7 +57,6 @@ class ProductEdit extends Component {
       imagespath
     };
     const headers = { Authorization: this.props.token };
-    console.log(this.props.token);
     axios.put(`/api/product/${id}`, product, { headers }).then(res => {
       console.log(res.data);
     });

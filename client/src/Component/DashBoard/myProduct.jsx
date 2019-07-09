@@ -2,12 +2,14 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import {
-  Card,
   TransitionablePortal,
   Segment,
   Image,
   Button,
-  Header
+  Header,
+  Icon,
+  Message,
+  Transition
 } from "semantic-ui-react";
 import axios from "../../axios";
 
@@ -39,7 +41,6 @@ class MyProduct extends Component {
       setTimeout(() => {
         this.setState({ message: "", open: false });
       }, 2500);
-      console.log(res.data);
     });
   };
   // show = () => this.setState({ openModal: true })
@@ -100,39 +101,13 @@ class MyProduct extends Component {
 
     const displayProducts = products.map(product => {
       return (
-        <div
-          className="product product-single slick-slide slick-active"
-          tabIndex={-1}
-          role="tabpanel"
-          id="slick-slide11"
-          style={{ width: 263 }}
-          data-slick-index={1}
-          aria-hidden="false"
-        >
+        <div className="product product-single" style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
           <div className="product-thumb">
-            <div className="product-label">
-              <span className="sale">-20%</span>
-            </div>
-            <ul className="product-countdown">
-              <li>
-                <span>00 H</span>
-              </li>
-              <li>
-                <span>00 M</span>
-              </li>
-              <li>
-                <span>00 S</span>
-              </li>
-            </ul>
-            <button className="main-btn quick-view" tabIndex={-1}>
-              <i className="fa fa-search-plus" /> Quick view
-                        </button>
+            <button className="main-btn quick-view"><i className="fa fa-search-plus" /> Quick view</button>
             <img src="https://react.semantic-ui.com/images/avatar/large/steve.jpg" alt="" />
           </div>
           <div className="product-body">
-            <h3 className="product-price">
-              $32.50 <del className="product-old-price">$45.00</del>
-            </h3>
+            <h3 className="product-price">{product.price} pkr</h3>
             <div className="product-rating">
               <i className="fa fa-star" />
               <i className="fa fa-star" />
@@ -140,35 +115,26 @@ class MyProduct extends Component {
               <i className="fa fa-star" />
               <i className="fa fa-star-o empty" />
             </div>
-            <h2 className="product-name">
-              <a
-                href="file:///C:/Users/usman/Desktop/e-shop/index.html#"
-                tabIndex={-1}
-              >
-                Product Name Goes Here
-                          </a>
-            </h2>
+            <h2 className="product-name"><a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">{product.name}</a></h2>
             <div className="product-btns">
-              <button className="main-btn icon-btn" tabIndex={-1}>
-                <i className="fa fa-heart" />
-              </button>
-              <button className="main-btn icon-btn" tabIndex={-1}>
-                <i className="fa fa-exchange" />
-              </button>
-              <button
-                className="primary-btn add-to-cart"
-                tabIndex={-1}
-              >
-                <i className="fa fa-shopping-cart" /> Add to Cart
-                          </button>
+              <Link to={`/edit/${product._id}`}><Button color="blue"> <Icon name="edit" /> Edit </Button></Link>
+              <Button negative onClick={() => this.DeleteHandler(product._id)}><Icon name="delete" /> Delete </Button>
             </div>
           </div>
         </div>
       )
     })
     return (
-      <div>
-        <Card.Group>{displayProducts}</Card.Group>
+      <div style={{ textAlign: "center" }} >
+        {displayProducts}
+        <Transition visible={true} animation='scale' duration={500}>
+          <Message size="tiny"  compact>
+            <Message.Header>Message </Message.Header>
+            <Message.Content>{message}</Message.Content>
+          </Message>
+        </Transition>
+        {/* <Card.Group>{displayProducts}</Card.Group> */}
+
       </div>
     );
   }

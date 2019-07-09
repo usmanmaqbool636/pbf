@@ -1,19 +1,27 @@
-import React from 'react'
+import React from 'react';
+import Slider from './slider';
 import banner1 from '../../Assests/img/banner01.jpg'
 import banner2 from '../../Assests/img/banner02.jpg'
 import banner3 from '../../Assests/img/banner03.jpg'
+import { Grid } from 'semantic-ui-react';
 
 export default function index() {
     return (
-            <div id="home">
-                {/* container */}
-                <div className="container">
-                    {/* home wrap */}
-                    <div className="home-wrap">
-                        {/* home slick */}
-                        <div id="home-slick" className="slick-initialized slick-slider"><button className="slick-prev slick-arrow" aria-label="Previous" type="button" style={{ display: 'block' }}>Previous</button>
-                            {/* banner */}
-                            <div className="slick-list draggable"><div className="slick-track" style={{ opacity: 1, width: 6090, transform: 'translate3d(-1740px, 0px, 0px)' }}><div className="banner banner-1 slick-slide slick-cloned" data-slick-index={-1} aria-hidden="true" tabIndex={-1} style={{ width: 870 }}>
+        <div id="home">
+            {/* container */}
+            <div className="container">
+                {/* home wrap */}
+                <div className="home-wrap">
+                    {/* home slick */}
+                    {/* <div id="home-slick" className="slick-initialized slick-slider"> */}
+                        <Grid padded>
+                                <Grid.Column mobile={16}>
+                                    <Slider />
+                                </Grid.Column>
+                        </Grid>
+                        {/* <button className="slick-prev slick-arrow" aria-label="Previous" type="button" style={{ display: 'block' }}>Previous</button> */}
+                        {/* banner */}
+                        {/* <div className="slick-list draggable"><div className="slick-track" style={{ opacity: 1, width: 6090, transform: 'translate3d(-1740px, 0px, 0px)' }}><div className="banner banner-1 slick-slide slick-cloned" data-slick-index={-1} aria-hidden="true" tabIndex={-1} style={{ width: 870 }}>
                                 <img src={banner1} alt="" />
                                 <div className="banner-caption">
                                     <h1 className="white-color">New Product <span>Collection</span></h1>
@@ -57,19 +65,20 @@ export default function index() {
                                         <h1 className="white-color">New Product <span>Collection</span></h1>
                                         <button className="primary-btn" tabIndex={-1}>Shop Now</button>
                                     </div>
-                                </div></div></div>
-                            {/* /banner */}
-                            {/* banner */}
-                            {/* /banner */}
-                            {/* banner */}
-                            {/* /banner */}
-                            <button className="slick-next slick-arrow" aria-label="Next" type="button" style={{ display: 'block' }}>Next</button></div>
-                        {/* /home slick */}
-                    </div>
-                    {/* /home wrap */}
+                                </div></div></div> */}
+                        {/* /banner */}
+                        {/* banner */}
+                        {/* /banner */}
+                        {/* banner */}
+                        {/* /banner */}
+                        {/* <button className="slick-next slick-arrow" aria-label="Next" type="button" style={{ display: 'block' }}>Next</button> */}
+                    {/* </div> */}
+                    {/* /home slick */}
                 </div>
-                {/* /container */}
+                {/* /home wrap */}
             </div>
+            {/* /container */}
+        </div>
 
     )
 }

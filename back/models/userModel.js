@@ -34,11 +34,19 @@ const userSchema = new Schema(
     myProducts: {
       type: [Schema.Types.ObjectId],
       ref: "Product"
+    },
+    cart: {
+      type: [Schema.Types.ObjectId],
+      ref: "Product",
+      // quantity: {
+      //   type: Number,
+      //   default: 0
+      // }
     }
   },
   { timestamps: true }
 );
-userSchema.pre("validate", async function(next) {
+userSchema.pre("validate", async function (next) {
   const { username, email, phone, password, passwordConfirmation } = this;
   const err = {};
   console.log(phone);
@@ -76,15 +84,15 @@ userSchema.pre("validate", async function(next) {
   }
   return next();
 });
-userSchema.methods.comparePassword = function(password, next) {
-  bcrypt.compare(password, this.password, function(err, isMatch) {
+userSchema.methods.comparePassword = function (password, next) {
+  bcrypt.compare(password, this.password, function (err, isMatch) {
     if (err) return next(err);
     return next(null, isMatch);
   });
 };
-userSchema.pre("save", function(next) {
+userSchema.pre("save", function (next) {
   const user = this;
-  bcrypt.hash(this.password, 10, function(err, hash) {
+  bcrypt.hash(this.password, 10, function (err, hash) {
     if (err) return next(err);
     user.password = hash;
     user.passwordConfirmation = hash;
@@ -92,7 +100,7 @@ userSchema.pre("save", function(next) {
   });
 });
 
-userSchema.methods.assignToken = function(next) {
+userSchema.methods.assignToken = function (next) {
   const { username, email, role, _id } = this;
   const token = jwt.sign(
     { _id, username, email, role },

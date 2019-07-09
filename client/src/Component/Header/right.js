@@ -3,15 +3,88 @@ import { connect } from 'react-redux';
 import { Icon, Button } from 'semantic-ui-react'
 import { logout } from '../../store/Action/userAction';
 import { withRouter, Link } from 'react-router-dom'
-
+import axios from '../../axios';
+import firebase from '../../firebase';
+import jwt from 'jsonwebtoken';
+// import { setUser } from '../../store/Action/userAction';
 class Right extends Component {
+
+    state = {
+        cart: [],
+    }
+    componentDidMount() {
+        const token = localStorage.getItem("token");
+        if (token) {
+            const user = jwt.decode(token.split(" ")[1]);
+            user.token = token;
+            const headers = { Authorization: token };
+            axios.get(`api/user/cart/${user._id}`, { headers })
+                .then(res => {
+                    this.setState({ cart: res.data[0].cart })
+                })
+        }
+    }
+    loadImages = (ImageUrl, _id) => {
+        const storageRef = firebase.storage().ref(`/products`);
+        storageRef.child(`/${ImageUrl}.jpg`).getDownloadURL().then((url) => {
+            console.log(url);
+            document.getElementById(_id).src = url;
+        })
+    }
     LogoutHandler = () => {
         this.props.logout();
         this.props.history.push('/login');
     }
+    deleteFromCart = (_id) => {
+        const token = localStorage.getItem("token");
+        const headers = { Authorization: token };
+        axios.put(`/api/user/cart/${_id}`, {}, { headers })
+            .then(res => {
+                const cart = this.state.cart.filter(c => {
+                    return c._id !== _id;
+                });
+                console.log(_id)
+                console.log(res.data);
+                this.setState({ cart })
+
+            })
+    }
+
     render() {
+
         const { user } = this.props;
+        const { cart } = this.state;
+        let sum = 0;
+        const displayCart = cart.map(c => {
+            sum = sum + c.price;
+            const url = this.loadImages(c.imagespath[0], c._id)
+            return (
+                <div className="product product-widget" key={c._id}>
+                    <div className="product-thumb">
+                        <img
+                            id={c._id}
+                            alt=""
+                        />
+                    </div>
+                    <div className="product-body">
+                        <h3 className="product-price">
+                            {c.price}
+                            {/* <span className="qty">x3</span> */}
+                        </h3>
+                        <h2 className="product-name">
+                            <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
+                                {c.name}
+                            </a>
+                        </h2>
+                    </div>
+                    <button className="cancel-btn" onClick={() => this.deleteFromCart(c._id)}>
+                        <i className="fa fa-trash" />
+                    </button>
+                </div>
+            )
+        })
         return (
+
             <div className="pull-right">
                 <ul className="header-btns">
                     {/* Account */}
@@ -53,15 +126,24 @@ class Right extends Component {
                                     <i className="fa fa-user-o" /> Dashboard
                                 </Link>
                             </li>)}
+
+                            {!!Object.entries(this.props.user).length && (<li>
+                                <Link to="/addproduct">
+                                    <Icon name="add square" />Add Product
+                                </Link>
+                            </li>)}
+
+
                             <li>
                                 <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
                                     <i className="fa fa-heart-o" /> My Wishlist
     </a>
                             </li>
+
                             <li>
-                                <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
+                                <Link to="/checkout">
                                     <i className="fa fa-check" /> Checkout
-    </a>
+    </Link>
                             </li>
                             <li>
                                 {
@@ -84,62 +166,21 @@ class Right extends Component {
                         >
                             <div className="header-btns-icon">
                                 <i className="fa fa-shopping-cart" />
-                                <span className="qty">3</span>
+                                <span className="qty">{cart.length}</span>
                             </div>
                             <strong className="text-uppercase">My Cart:</strong>
                             <br />
-                            <span>35.20$</span>
+                            <span>{sum}</span>
                         </a>
                         <div className="custom-menu">
                             <div id="shopping-cart">
                                 <div className="shopping-cart-list">
-                                    <div className="product product-widget">
-                                        <div className="product-thumb">
-                                            <img
-                                                src="file:///C:/Users/usman/Desktop/e-shop/img/thumb-product01.jpg"
-                                                alt=""
-                                            />
-                                        </div>
-                                        <div className="product-body">
-                                            <h3 className="product-price">
-                                                $32.50 <span className="qty">x3</span>
-                                            </h3>
-                                            <h2 className="product-name">
-                                                <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                                                    Product Name Goes Here
-            </a>
-                                            </h2>
-                                        </div>
-                                        <button className="cancel-btn">
-                                            <i className="fa fa-trash" />
-                                        </button>
-                                    </div>
-                                    <div className="product product-widget">
-                                        <div className="product-thumb">
-                                            <img
-                                                src="file:///C:/Users/usman/Desktop/e-shop/img/thumb-product01.jpg"
-                                                alt=""
-                                            />
-                                        </div>
-                                        <div className="product-body">
-                                            <h3 className="product-price">
-                                                $32.50 <span className="qty">x3</span>
-                                            </h3>
-                                            <h2 className="product-name">
-                                                <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
-                                                    Product Name Goes Here
-            </a>
-                                            </h2>
-                                        </div>
-                                        <button className="cancel-btn">
-                                            <i className="fa fa-trash" />
-                                        </button>
-                                    </div>
+                                    {displayCart}
                                 </div>
                                 <div className="shopping-cart-btns">
-                                    <button className="main-btn">View Cart</button>
-                                    <button className="primary-btn">
-                                        Checkout <i className="fa fa-arrow-circle-right" />
+                                    {/* <button className="main-btn">View Cart</button> */}
+                                    <button className="main-btn" onClick={() => this.props.history.push('/checkout')}>
+                                        Checkout and view cart <i className="fa fa-arrow-circle-right" />
                                     </button>
                                 </div>
                             </div>
@@ -164,4 +205,9 @@ const mapStateToProps = (state) => {
         user: state.user.user
     }
 }
-export default withRouter(connect(mapStateToProps, { logout })(Right));
+export default withRouter(connect(mapStateToProps,
+    {
+        logout,
+        // setUser
+    })(Right));
+

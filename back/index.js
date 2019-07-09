@@ -31,12 +31,16 @@ app.get('/api/cat', (req, res) => {
   Category.find({})
     .select({ subcategory: 0 })
     .then(doc => {
-      console.log(doc)
       res.status(200).json(doc)
     })
 })
 app.get('/api/sub/:id', (req, res) => {
   Sub.find({ category: req.params.id })
+    .then(doc => res.status(200).json(doc))
+})
+app.get('/api/sub', (req, res) => {
+  Category.find({})
+  .populate({path:"subcategory",model:"Sub"})
     .then(doc => res.status(200).json(doc))
 })
 
