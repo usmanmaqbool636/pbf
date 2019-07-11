@@ -30,7 +30,6 @@ const DashBoard = (props) => {
 
 
 // const DashBoard = (props) => {
-//   console.log(props.match.url);
 //   return (<React.Fragment>
 
 //     <Route exat path={`${props.match.url}/myproduct`} component={MyProduct} />

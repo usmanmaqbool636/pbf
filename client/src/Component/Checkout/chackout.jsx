@@ -3,8 +3,9 @@ import axios from '../../axios';
 import firebase from '../../firebase';
 import { Button } from 'semantic-ui-react'
 import jwt from 'jsonwebtoken';
+import { connect } from 'react-redux';
+import { deleteFromCart } from '../../store/Action/cartAction'
 class Chackout extends Component {
-
     state = {
         cart: [],
     }
@@ -17,19 +18,13 @@ class Chackout extends Component {
             axios.get(`api/user/cart/${user._id}`, { headers })
                 .then(res => {
                     this.setState({ cart: res.data[0].cart })
-                    console.log(res.data[0].cart);
                 })
         }
-    }
-
-    removeFromCheckout = (_id) => {
-        console.log(_id);
     }
 
     loadImages = (ImageUrl, _id) => {
         const storageRef = firebase.storage().ref(`/products`);
         storageRef.child(`/${ImageUrl}.jpg`).getDownloadURL().then((url) => {
-            console.log(url);
             document.getElementById(_id).src = url;
         })
     }
@@ -37,22 +32,23 @@ class Chackout extends Component {
         this.setState({ [evt.target.name]: evt.target.value })
     }
     deleteFromCart = (_id) => {
-        console.log(_id)
         const token = localStorage.getItem("token");
         const headers = { Authorization: token };
         axios.put(`/api/user/cart/${_id}`, {}, { headers })
             .then(res => {
-                const cart = this.state.cart.filter(c => {
-                    return c._id !== _id;
-                });
-                console.log(_id)
-                console.log(res.data);
-                this.setState({ cart })
+                // const cart = this.state.cart.filter(c => {
+                //     return c._id !== _id;
+                // });
+                // this.setState({ cart })
+                this.props.deleteFromCart(_id)
 
             })
     }
+    handleSubmit=(evt)=>{
+        evt.preventDefault();
+    }
     render() {
-        const { cart } = this.state;
+        const { cart } = this.props;
         let sum = 0;
         const displayCart = cart.map(c => {
             sum = sum + c.price;
@@ -84,7 +80,7 @@ class Chackout extends Component {
                 <div className="container">
                     {/* row */}
                     <div className="row">
-                        <form id="checkout-form" className="clearfix">
+                        <form onSubmit={this.handleSubmit} className="clearfix">
                             <div className="col-md-6">
                                 <div className="billing-details">
                                     {/* <p>Already a customer ? <a href="#">Login</a></p> */}
@@ -234,7 +230,7 @@ class Chackout extends Component {
                                         </tfoot>
                                     </table>
                                     <div className="pull-right">
-                                        <button className="primary-btn">Place Order</button>
+                                        <button type="submit" className="primary-btn">Place Order</button>
                                     </div>
                                 </div>
                             </div>
@@ -248,4 +244,9 @@ class Chackout extends Component {
         )
     }
 }
-export default Chackout;
+const mapStateToProps = (state) => {
+    return {
+        cart: state.cart
+    }
+}
+export default connect(mapStateToProps, { deleteFromCart })(Chackout);

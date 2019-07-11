@@ -3,23 +3,34 @@ import { withRouter } from 'react-router-dom';
 import axios from '../../axios';
 import firebase from '../../firebase';
 import Slider from './slider/sliderp';
+import { inserInCart } from '../../store/Action/cartAction';
+import { connect } from 'react-redux';
+import Review from './review';
+import moment from 'moment';
 class SingleProduct extends Component {
 
     state = {
         product: {},
-        images: []
+        images: [],
+        reviews: []
     };
 
     componentDidMount() {
         const { id } = this.props.match.params;
         axios.get(`/api/product/:${id}`)
             .then(res => {
-                console.log(res.data)
                 this.setState({ product: res.data })
+                this.getReview();
                 this.loadImages();
             })
             .catch(err => {
                 console.log(err);
+            })
+    }
+    getReview = () => {
+        axios.get(`/api/product/review/${this.state.product._id}`)
+            .then(res => {
+                this.setState({ reviews: res.data })
             })
     }
     loadImages = () => {
@@ -42,13 +53,56 @@ class SingleProduct extends Component {
         }
         axios.put(`/api/product/cart/${_id}`, {}, { headers })
             .then(res => {
-                if (res.data.success)
+                if (res.data.success) {
                     this.setState({ message: res.data.message })
+                    this.props.inserInCart(res.data.cart);
+                }
             })
     }
 
     render() {
-        const { product, images } = this.state;
+        const { product, images, reviews } = this.state;
+
+        const displayReviews = reviews.map(r => {
+            const rating = [...Array(5)];
+            console.log(rating);
+            const displayRating = rating.map((_, i) => {
+                console.log(r.rating, i + 1)
+                if (r.rating > i ) {
+                    return <i className="fa fa-star" />
+                }
+                return <i className="fa fa-star-o empty" />
+            })
+            return (
+                <div className="single-review">
+                    <div className="review-heading" style={{ color: 'steelblue' }}>
+                        <div >
+                            {/* <a href="#"> */}
+                            <i className="fa fa-user-o" /> {r.name}
+                            {/* </a> */}
+                        </div>
+                        <div>
+                            {/* <a href="#"> */}
+                            <i className="fa fa-clock-o" />
+                            {/* {" "} {moment(r.createdAt, "YYYYMMDD").fromNow()} */}
+                            {moment(r.createdAt).calendar()}
+                            {/* </a> */}
+                        </div>
+                        <div className="review-rating pull-right">
+                            {displayRating}
+                            {/* <i className="fa fa-star" />
+                            <i className="fa fa-star" />
+                            <i className="fa fa-star" /> */}
+                        </div>
+                    </div>
+                    <div className="review-body">
+                        <p>
+                            {r.review}
+                        </p>
+                    </div>
+                </div>
+            )
+        })
         return (
             <div className="section">
                 {/* container */}
@@ -85,7 +139,7 @@ class SingleProduct extends Component {
                                             <i className="fa fa-star" />
                                             <i className="fa fa-star-o empty" />
                                         </div>
-                                        <a href="#">3 Review(s) / Add Review</a>
+                                        <a href="#">{reviews.length} Review(s)</a>
                                     </div>
                                     <p>
                                         <strong>Availability:</strong> In Stock
@@ -143,7 +197,7 @@ class SingleProduct extends Component {
                                             <span className="text-uppercase">QTY: </span>
                                             <input className="input" type="number" />
                                         </div>
-                                        <button className="primary-btn add-to-cart" onClick={()=>this.addToCart(product._id)}>
+                                        <button className="primary-btn add-to-cart" onClick={() => this.addToCart(product._id)}>
                                             <i className="fa fa-shopping-cart" /> Add to Cart
               </button>
                                         <div className="pull-right">
@@ -175,7 +229,7 @@ class SingleProduct extends Component {
                                         </li>
                                         <li>
                                             <a data-toggle="tab" href="#tab3">
-                                                Reviews (3)
+                                                Reviews ({reviews.length})
                 </a>
                                         </li>
                                     </ul>
@@ -194,33 +248,7 @@ class SingleProduct extends Component {
                                             <div className="row">
                                                 <div className="col-md-6">
                                                     <div className="product-reviews">
-                                                        <div className="single-review">
-                                                            <div className="review-heading">
-                                                                <div>
-                                                                    <a href="#">
-                                                                        <i className="fa fa-user-o" /> John
-                                                                    </a>
-                                                                </div>
-                                                                <div>
-                                                                    <a href="#">
-                                                                        <i className="fa fa-clock-o" /> 27 DEC
-                                                                        2017 / 8:0 PM
-                            </a>
-                                                                </div>
-                                                                <div className="review-rating pull-right">
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star-o empty" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="review-body">
-                                                                <p>
-                                                                    Details
-                          </p>
-                                                            </div>
-                                                        </div>
+                                                        {displayReviews}
                                                         <div className="single-review">
                                                             <div className="review-heading">
                                                                 <div>
@@ -299,80 +327,7 @@ class SingleProduct extends Component {
                                                         </ul>
                                                     </div>
                                                 </div>
-                                                <div className="col-md-6">
-                                                    <h4 className="text-uppercase">
-                                                        Write Your Review
-                    </h4>
-                                                    <p>Your email address will not be published.</p>
-                                                    <form className="review-form">
-                                                        <div className="form-group">
-                                                            <input
-                                                                className="input"
-                                                                type="text"
-                                                                placeholder="Your Name"
-                                                            />
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <input
-                                                                className="input"
-                                                                type="email"
-                                                                placeholder="Email Address"
-                                                            />
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <textarea
-                                                                className="input"
-                                                                placeholder="Your review"
-                                                                defaultValue={""}
-                                                            />
-                                                        </div>
-                                                        <div className="form-group">
-                                                            <div className="input-rating">
-                                                                <strong className="text-uppercase">
-                                                                    Your Rating:{" "}
-                                                                </strong>
-                                                                <div className="stars">
-                                                                    <input
-                                                                        type="radio"
-                                                                        id="star5"
-                                                                        name="rating"
-                                                                        defaultValue={5}
-                                                                    />
-                                                                    <label htmlFor="star5" />
-                                                                    <input
-                                                                        type="radio"
-                                                                        id="star4"
-                                                                        name="rating"
-                                                                        defaultValue={4}
-                                                                    />
-                                                                    <label htmlFor="star4" />
-                                                                    <input
-                                                                        type="radio"
-                                                                        id="star3"
-                                                                        name="rating"
-                                                                        defaultValue={3}
-                                                                    />
-                                                                    <label htmlFor="star3" />
-                                                                    <input
-                                                                        type="radio"
-                                                                        id="star2"
-                                                                        name="rating"
-                                                                        defaultValue={2}
-                                                                    />
-                                                                    <label htmlFor="star2" />
-                                                                    <input
-                                                                        type="radio"
-                                                                        id="star1"
-                                                                        name="rating"
-                                                                        defaultValue={1}
-                                                                    />
-                                                                    <label htmlFor="star1" />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <button className="primary-btn">Submit</button>
-                                                    </form>
-                                                </div>
+                                                <Review getReview={this.getReview} productId={product._id} />
                                             </div>
                                         </div>
                                     </div>
@@ -389,4 +344,4 @@ class SingleProduct extends Component {
         )
     }
 }
-export default withRouter(SingleProduct);
+export default withRouter(connect(null, { inserInCart })(SingleProduct));

@@ -5,7 +5,7 @@ import axios from "../../axios";
 import uuid from "uuid";
 import mime from "mime-types";
 import firebase from "../../firebase";
-import { Grid, Button, Form, Header, Message, Icon, Dropdown } from "semantic-ui-react";
+import { Grid, Button, Form, Header, Message, Icon, Dropdown, Transition } from "semantic-ui-react";
 
 
 class AddProduct extends Component {
@@ -16,15 +16,13 @@ class AddProduct extends Component {
     price: "",
     category: "",
     subcategory: "",
-    brand:'',
+    brand: '',
     errors: {},
     loading: false,
     images: [],
     imagespath: [],
-    res: {},
     cat: [],
     subcat: [],
-    message: "",
     storageRef: firebase.storage().ref(),
     user: this.props.currentUser,
     modal: false,
@@ -33,7 +31,9 @@ class AddProduct extends Component {
     percentUploaded: 0,
 
     file: null,
-    authorized: ["image/jpeg", "image/png"]
+    authorized: ["image/jpeg", "image/png"],
+    message: "",
+    success: false
   };
   componentDidMount() {
     document.title += "! create Product";
@@ -48,11 +48,8 @@ class AddProduct extends Component {
     this.setState({ image: file });
     const { imagespath } = this.state;
     const u = uuid();
-    console.log(u);
     if (u) {
-      console.log("yes u");
       imagespath[i] = u;
-      console.log(imagespath);
       this.setState({ imagespath });
     }
 
@@ -116,12 +113,9 @@ class AddProduct extends Component {
 
 
   handleCategoryChange = (evt, name, { value }) => {
-    const { category } = this.state;
     this.setState({ name: value });
-    console.log(name, category);
-
-
   }
+
   imageChangeHandler = evt => {
     const { images } = this.state;
     const file = evt.target.files[0];
@@ -147,12 +141,19 @@ class AddProduct extends Component {
     axios
       .post(
         "/api/product/create",
-        { name, price, desription, category, subcategory,brand },
+        { name, price, desription, category, subcategory, brand },
         { headers }
       )
       .then(res => {
-        console.log(res.data);
-        this.setState({ res: res.data });
+        if (res.data.success) {
+          this.setState(
+            { success: res.data.success, message: res.data.message }
+          );
+          setTimeout(() => {
+            this.setState({ success: false, message: '' })
+          }, 3000);
+          console.log(res.data)
+        }
       })
       .catch(err => {
         console.log("err=>>>", err);
@@ -172,11 +173,15 @@ class AddProduct extends Component {
       subcategory,
       errors,
       loading,
-      cat, subcat, images
+      cat, subcat, images,
+      success,
+      message,
+      brand
     } = this.state;
     return (
       <Grid container textAlign="center" container>
         <Grid.Column computer={8} mobile={16} tablet={10}>
+
           <Header as="h1" icon color="orange" textAlign="center">
             <Icon name="connectdevelop" color="orange" />
             Create Product
@@ -245,17 +250,22 @@ class AddProduct extends Component {
               options={subcat}
               value={subcategory}
             />
-            <Form.Field
-              // onBlur={this.SubCategory}
+            {/* this should be if needed */}
+            {/* <Form.Field
               placeholder="Brands"
               name="brand"
               control={Dropdown}
               fluid
               selection
               onChange={this.handleChange1}
-              options={[{text:'nike',key:"nike"},{text:'addidas',key:"addidas"},{text:'polo',key:"polo"},{text:'sumsang',key:"sumsang"},{text:'huawei',key:"huawei"}]}
-              value={category}
-            />
+              options={[
+                { text: 'nike', key: "nike", value: 'nike' },
+                { text: 'addidas', key: "addidas", value: 'addidaas' },
+                { text: 'polo', key: "polo", value: 'polo' },
+                { text: 'sumsang', key: "sumsang", value: 'sumsang' },
+                { text: 'huawei', key: "huawei", value: 'huawei' }]}
+              value={brand}
+            /> */}
             {/* <Form.Input
               fluid
               name="category"
@@ -301,25 +311,28 @@ class AddProduct extends Component {
               disabled={images.length > 2 ? false : true}
 
             />
-
+            <Message hidden={!success} positive floating
+              header="Message"
+              content={message}
+            />
             <Button color="orange" fluid size="large" loading={loading}>
               Create Product
             </Button>
           </Form>
-          {Object.entries(errors).length > 0 && (
-            <Message error>
-              <h3>Error</h3>
-              {errors.message}
-            </Message>
-          )}
+          {/* {Object.entries(errors).length > 0 && (
+          <Message error>
+            <h3>Error</h3>
+            {errors.message}
+          </Message>
+        )} */}
         </Grid.Column>
-      </Grid>
+      </Grid >
     );
   }
 }
 const mapDispatchToProps = state => {
   return {
-    user: state.user.user
+    user: state.user
   };
 };
 export default connect(mapDispatchToProps)(AddProduct);

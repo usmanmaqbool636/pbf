@@ -16,8 +16,6 @@ class Navigation extends Component {
       .then(res => {
         this.setState({ category: res.data })
         this.props.setCat(res.data)
-
-        console.log(res.data)
       })
   }
 

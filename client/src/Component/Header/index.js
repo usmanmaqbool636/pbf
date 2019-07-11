@@ -6,7 +6,6 @@ import TopHeader from './topHeader';
 import Left from './left';
 import Right from './right';
 const Header = (props) => {
-    console.log(props);
     return (
         <header>
             {/* top Header */}

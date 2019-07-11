@@ -58,8 +58,10 @@ Router.post("/login", (req, res) => {
     .catch(err => console.log("==>>", err));
 });
 
+
+
 Router.get('/cart/:id', login, (req, res) => {
-  User.find({ _id: req.params.id})
+  User.find({ _id: req.params.id })
     .select('cart')
     .populate({ path: "cart", model: "Product" })
     .then(docs => {

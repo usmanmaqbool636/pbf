@@ -141,7 +141,7 @@ class MyProduct extends Component {
 }
 const mapDispatchToProps = state => {
   return {
-    user: state.user.user
+    user: state.user
   };
 };
 export default connect(mapDispatchToProps)(MyProduct);

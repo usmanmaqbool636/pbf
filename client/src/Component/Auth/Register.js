@@ -59,14 +59,16 @@ class Register extends Component {
     };
 
     axios.post("/api/user/register", user).then(res => {
-      console.log(res.data);
       if (!res.data.success) {
         this.setState({ errors: res.data.err });
       } else {
         this.setState({ errors: {} });
         localStorage.setItem("token", `bearer ${res.data.token}`);
         this.props.setUser(res.data);
-        this.props.history.push("/");
+        if (this.props.history.length < 2) {
+          this.props.history.push("/");
+        }
+        else this.props.history.goBack('/')
       }
     });
   };
@@ -82,7 +84,6 @@ class Register extends Component {
       loading,
       role
     } = this.state;
-    console.log(this.state.role);
     return (
       <Grid textAlign="center" verticalAlign="middle" className="app">
         <Grid.Column style={{ maxWidth: 450 }}>

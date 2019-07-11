@@ -7,9 +7,9 @@ import "./App.css";
 import { setUser } from "./store/Action/userAction";
 
 import Home from "./Component/Home/index";
-import Section1 from "./Component/Section1/index";
+// import Section1 from "./Component/Section1/index";
 import Section2 from "./Component/Section2/index";
-import Section3 from "./Component/Section3/index";
+// import Section3 from "./Component/Section3/index";
 import Section4 from "./Component/Section4/index";
 
 import Register from "./Component/Auth/Register";
@@ -18,7 +18,7 @@ import AddProduct from "./Component/product/addProduct";
 import Products from "./Component/product/productPage";
 import SingleProduct from './Component/product/singleProduct';
 import DashBoard from "./Component/DashBoard/dashboard.jsx";
-import MyProduct from './Component/DashBoard/myProduct';
+// import MyProduct from './Component/DashBoard/myProduct';
 import HOC from "./HOC";
 import ProductEdit from "./Component/product/productEdit";
 import CheckOut from './Component/Checkout/chackout';
@@ -33,7 +33,7 @@ class App extends Component {
   }
   render() {
     const { user, open } = this.props;
-    console.log(open);
+    console.log(this.props.history);
     return (
       <Switch>
         <Route
@@ -101,7 +101,7 @@ class App extends Component {
 }
 const mapDispatchTopProps = state => {
   return {
-    user: state.user.user,
+    user: state.user,
     open: state.responsive.responsiveNave
   };
 };

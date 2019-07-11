@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import firebase from '../../firebase';
 import { withRouter } from 'react-router-dom';
 import axios from '../../axios';
+import { inserInCart } from '../../store/Action/cartAction';
+import { connect } from 'react-redux';
 
 class Product extends Component {
     state = {
         url: '',
     }
     componentDidMount() {
-        const { ImageUrl, i } = this.props;
+        const { ImageUrl } = this.props;
         const storageRef = firebase.storage().ref(`/products`);
         storageRef.child(`/${ImageUrl}.jpg`).getDownloadURL().then((url) => {
-            console.log(url);
             this.setState({ url })
             // document.getElementById(`imageUrl${i}`).src = url;
         })
@@ -19,13 +20,15 @@ class Product extends Component {
     addToCart = (_id) => {
         const token = localStorage.getItem("token");
         const headers = { Authorization: token };
-        if(!token){
+        if (!token) {
             // this.props.history.push('/login');
         }
         axios.put(`/api/product/cart/${_id}`, {}, { headers })
             .then(res => {
                 if (res.data.success)
-                    this.setState({ message: res.data.message })
+                this.setState({ message: res.data.message })
+                this.props.inserInCart(res.data.cart);
+
             })
     }
     render() {
@@ -35,10 +38,6 @@ class Product extends Component {
             <div className="col-md-4 col-sm-6 col-xs-6">
                 <div className="product product-single">
                     <div className="product-thumb" onClick={() => this.props.history.push(`/product/${_id}`)}>
-                        {/* <div className="product-label">
-                            <span>New</span>
-                            <span className="sale">-20%</span>
-                        </div> */}
                         <button className="main-btn quick-view">
                             <i className="fa fa-search-plus" /> Quick view
                       </button>
@@ -77,4 +76,4 @@ class Product extends Component {
         )
     }
 }
-export default withRouter(Product);
+export default withRouter(connect(null, { inserInCart })(Product));

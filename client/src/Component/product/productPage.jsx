@@ -41,11 +41,9 @@ class ProductPage extends Component {
     }
     getProduct = () => {
         const { category, _id } = this.state.selected_cat;
-        console.log('this.getProduct')
         axios.get(`/api/product/${category}/${_id}`)
             .then(res => {
                 this.setState({ products: res.data, filterProduct: res.data })
-                console.log(res.data);
             })
     }
     FilterChange = (value) => {
@@ -62,7 +60,6 @@ class ProductPage extends Component {
     }
     render() {
         const { products,filterProduct } = this.state;
-        console.log(filterProduct);
         const displayProduct = filterProduct.map((p, i) => {
             return <Product {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
         })
@@ -210,7 +207,6 @@ class ProductPage extends Component {
     }
 }
 const mapDispatchToProps = (state) => {
-    // console.log(state.product.category)
     return {
         category: state.product.category
     }

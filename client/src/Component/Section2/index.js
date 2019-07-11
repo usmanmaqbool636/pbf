@@ -34,7 +34,7 @@ export default function index() {
                         1
                       </button>
                     </li>
-                    <li role="presentation" className>
+                    <li role="presentation" className="">
                       <button
                         type="button"
                         role="tab"

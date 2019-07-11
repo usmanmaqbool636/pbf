@@ -6,7 +6,7 @@ import { withRouter, Link } from 'react-router-dom'
 import axios from '../../axios';
 import firebase from '../../firebase';
 import jwt from 'jsonwebtoken';
-// import { setUser } from '../../store/Action/userAction';
+import { deleteFromCart, inserInCart } from '../../store/Action/cartAction';
 class Right extends Component {
 
     state = {
@@ -21,13 +21,13 @@ class Right extends Component {
             axios.get(`api/user/cart/${user._id}`, { headers })
                 .then(res => {
                     this.setState({ cart: res.data[0].cart })
+                    this.props.inserInCart(res.data[0].cart)
                 })
         }
     }
     loadImages = (ImageUrl, _id) => {
         const storageRef = firebase.storage().ref(`/products`);
         storageRef.child(`/${ImageUrl}.jpg`).getDownloadURL().then((url) => {
-            console.log(url);
             document.getElementById(_id).src = url;
         })
     }
@@ -43,17 +43,15 @@ class Right extends Component {
                 const cart = this.state.cart.filter(c => {
                     return c._id !== _id;
                 });
-                console.log(_id)
-                console.log(res.data);
+                this.props.deleteFromCart(_id)
                 this.setState({ cart })
-
             })
     }
 
     render() {
 
-        const { user } = this.props;
-        const { cart } = this.state;
+        const { user,cart } = this.props;
+        // const { cart } = this.state;
         let sum = 0;
         const displayCart = cart.map(c => {
             sum = sum + c.price;
@@ -202,12 +200,14 @@ class Right extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user.user
+        user: state.user,
+        cart: state.cart
     }
 }
 export default withRouter(connect(mapStateToProps,
     {
         logout,
-        // setUser
+        deleteFromCart,
+        inserInCart
     })(Right));
 

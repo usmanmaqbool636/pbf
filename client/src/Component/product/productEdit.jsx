@@ -182,7 +182,7 @@ class ProductEdit extends Component {
 }
 const mapDispatchToProps = state => {
   return {
-    token: state.user.user.token
+    token: state.user.token
   };
 };
 export default connect(mapDispatchToProps)(ProductEdit);

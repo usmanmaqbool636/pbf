@@ -37,15 +37,13 @@ const productSchema = new Schema(
     specification: {
       type: String
     },
-    brand: String,
+    // brand: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: 'Brand'
+    // },
     review: {
-      rating: String,
-      comments: [
-        {
-          type: String,
-          required: true
-        }
-      ]
+      type: [Schema.Types.ObjectId],
+      ref: 'Review'
     }
   },
   { timestamps: true }
