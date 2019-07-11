@@ -7,8 +7,8 @@ class Review extends Component {
         review: '',
         rating: 0,
     }
-    
-   
+
+
     handleChange = (evt) => {
         this.setState({ [evt.target.name]: evt.target.value })
         console.log(evt.target.name, evt.target.value);
@@ -21,6 +21,7 @@ class Review extends Component {
 
         axios.post(`/api/product/review`, { name, email, review, rating, product: this.props.productId }, { headers })
             .then(res => {
+                this.setState({name:'',email:'',review:'',rating:0})
                 this.props.getReview();
             })
     }

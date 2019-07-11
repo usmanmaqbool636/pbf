@@ -12,7 +12,8 @@ class SingleProduct extends Component {
     state = {
         product: {},
         images: [],
-        reviews: []
+        reviews: [],
+        rating: [...Array(5)]
     };
 
     componentDidMount() {
@@ -61,14 +62,12 @@ class SingleProduct extends Component {
     }
 
     render() {
-        const { product, images, reviews } = this.state;
-
+        const { product, images, reviews, rating } = this.state;
+        let sumRating = 0;
         const displayReviews = reviews.map(r => {
-            const rating = [...Array(5)];
-            console.log(rating);
+            sumRating = sumRating + r.rating;
             const displayRating = rating.map((_, i) => {
-                console.log(r.rating, i + 1)
-                if (r.rating > i ) {
+                if (r.rating > i) {
                     return <i className="fa fa-star" />
                 }
                 return <i className="fa fa-star-o empty" />
@@ -103,6 +102,8 @@ class SingleProduct extends Component {
                 </div>
             )
         })
+        sumRating = Math.round(sumRating/reviews.length);
+        console.log(sumRating);
         return (
             <div className="section">
                 {/* container */}
@@ -133,11 +134,12 @@ class SingleProduct extends Component {
                                     </h3>
                                     <div>
                                         <div className="product-rating">
-                                            <i className="fa fa-star" />
-                                            <i className="fa fa-star" />
-                                            <i className="fa fa-star" />
-                                            <i className="fa fa-star" />
-                                            <i className="fa fa-star-o empty" />
+                                            {rating.map((_, i) => {
+                                                if (sumRating > i) {
+                                                    return <i className="fa fa-star" />
+                                                }
+                                                return <i className="fa fa-star-o empty" />
+                                            })}
                                         </div>
                                         <a href="#">{reviews.length} Review(s)</a>
                                     </div>
@@ -249,68 +251,6 @@ class SingleProduct extends Component {
                                                 <div className="col-md-6">
                                                     <div className="product-reviews">
                                                         {displayReviews}
-                                                        <div className="single-review">
-                                                            <div className="review-heading">
-                                                                <div>
-                                                                    <a href="#">
-                                                                        <i className="fa fa-user-o" /> John
-                            </a>
-                                                                </div>
-                                                                <div>
-                                                                    <a href="#">
-                                                                        <i className="fa fa-clock-o" /> 27 DEC
-                                                                        2017 / 8:0 PM
-                            </a>
-                                                                </div>
-                                                                <div className="review-rating pull-right">
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star-o empty" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="review-body">
-                                                                <p>
-                                                                    ABC
-                          </p>
-                                                            </div>
-                                                        </div>
-                                                        <div className="single-review">
-                                                            <div className="review-heading">
-                                                                <div>
-                                                                    <a href="#">
-                                                                        <i className="fa fa-user-o" /> John
-                            </a>
-                                                                </div>
-                                                                <div>
-                                                                    <a href="#">
-                                                                        <i className="fa fa-clock-o" /> 27 DEC
-                                                                        2017 / 8:0 PM
-                            </a>
-                                                                </div>
-                                                                <div className="review-rating pull-right">
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star" />
-                                                                    <i className="fa fa-star-o empty" />
-                                                                </div>
-                                                            </div>
-                                                            <div className="review-body">
-                                                                <p>
-                                                                    Lorem ipsum dolor sit amet, consectetur
-                                                                    adipisicing elit, sed do eiusmod tempor
-                                                                    incididunt ut labore et dolore magna
-                                                                    aliqua.Ut enim ad minim veniam, quis
-                                                                    nostrud exercitation ullamco laboris nisi
-                                                                    ut aliquip ex ea commodo consequat.Duis
-                                                                    aute irure dolor in reprehenderit in
-                                                                    voluptate velit esse cillum dolore eu
-                                                                    fugiat nulla pariatur.
-                          </p>
-                                                            </div>
-                                                        </div>
                                                         <ul className="reviews-pages">
                                                             <li className="active">1</li>
                                                             <li>
