@@ -26,7 +26,7 @@ class Review extends Component {
             })
     }
     render() {
-        const { name, email, review, rating } = this.state;
+        const { name, email, review } = this.state;
         return (
             <div className="col-md-6">
                 <h4 className="text-uppercase">

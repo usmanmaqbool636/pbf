@@ -61,6 +61,20 @@ productSchema.pre("save", function (next) {
     }
   );
 });
+productSchema.pre('remove', function (next) {
+
+  User.updateOne({ _id: this.vendor }, { $pull: { myProducts: this._id } }, { upsert: true, new: true },(err,doc)=>{
+    if(!err){
+      console.log(doc);
+      next();
+    }
+    else{
+      next({success:false,message:"product not deleted from user account" })
+    }
+  })
+  // console.log("==>>>", this)
+  next();
+})
 
 const Product = mongoose.model("Product", productSchema);
 

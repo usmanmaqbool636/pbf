@@ -5,6 +5,7 @@ import { Button } from 'semantic-ui-react'
 import jwt from 'jsonwebtoken';
 import { connect } from 'react-redux';
 import { deleteFromCart } from '../../store/Action/cartAction'
+import { socket } from '../../sockets';
 class Chackout extends Component {
     state = {
         cart: [],
@@ -20,6 +21,14 @@ class Chackout extends Component {
                     this.setState({ cart: res.data[0].cart })
                 })
         }
+
+
+        socket.on('user', ({ user }) => {
+            console.log(user._id);
+        })
+        socket.on('notuser', (user) => {
+            console.log(user)
+        })
     }
 
     loadImages = (ImageUrl, _id) => {
@@ -44,8 +53,13 @@ class Chackout extends Component {
 
             })
     }
-    handleSubmit=(evt)=>{
+    handleSubmit = (evt) => {
         evt.preventDefault();
+        const { cart } = this.props;
+        cart.forEach(c => {
+            console.log(c)
+            socket.emit('placeorder', { vendor: c.vendor });
+        });
     }
     render() {
         const { cart } = this.props;
@@ -55,9 +69,9 @@ class Chackout extends Component {
             this.loadImages(c.imagespath[0], `${c._id}ab`)
             return (
                 <tr>
-                    <td className="thumb"><img id={`${c._id}ab`} alt="image" /></td>
+                    <td className="thumb"><img id={`${c._id}ab`} alt=" " /></td>
                     <td className="details">
-                        <a href="#">{c.name}</a>
+                        <span>{c.name}</span>
                         <ul>
                             <li><span>Size: XL</span></li>
                             <li><span>Color: Camelot</span></li>

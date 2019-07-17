@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import {} from 'semantic-ui-react';
+import {Loader,Dimmer} from 'semantic-ui-react';
 import Aside from './aside/Aside';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
@@ -14,9 +14,9 @@ class ProductPage extends Component {
         products: [],
         range: [],
         filterProduct: [],
-        gender: ''
+        gender: '',
+        loading: true
     }
-
     componentWillReceiveProps() {
         this.getCategory();
     }
@@ -32,7 +32,7 @@ class ProductPage extends Component {
                     if (c.text === category.split('-').join(' '))
                         c.subcategory.forEach(subcat => {
                             if (subcat.text === sub.split('-').join(' ')) {
-                                this.setState({ selected_cat: subcat })
+                                this.setState({ selected_cat: subcat, loading: true })
                                 this.getProduct();
                             }
                         })
@@ -43,7 +43,7 @@ class ProductPage extends Component {
         const { category, _id } = this.state.selected_cat;
         axios.get(`/api/product/${category}/${_id}`)
             .then(res => {
-                this.setState({ products: res.data, filterProduct: res.data })
+                this.setState({ products: res.data, filterProduct: res.data, loading: false })
             })
     }
     FilterChange = (value) => {
@@ -52,17 +52,27 @@ class ProductPage extends Component {
         const filterProduct = products.filter(p => {
             return p.price > range[0] && p.price < range[1]
         })
-        this.setState({filterProduct})
+        this.setState({ filterProduct })
     }
     handleChange = (e, { name, value }) => {
         this.setState({ [name]: value })
 
     }
     render() {
-        const { products,filterProduct } = this.state;
-        const displayProduct = filterProduct.map((p, i) => {
-            return <Product {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
-        })
+        const { filterProduct, loading } = this.state;
+        let displayProduct;
+        if (loading) {
+            displayProduct = (
+                <Dimmer active inverted>
+                    <Loader size='large'>Loading</Loader>
+                </Dimmer>
+            );
+        }
+        else {
+            displayProduct = filterProduct.map((p, i) => {
+                return <Product {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
+            })
+        }
         return (
             <div className="section">
                 {/* <div class="ui segment">
@@ -85,10 +95,10 @@ class ProductPage extends Component {
                             <div className="store-filter clearfix">
                                 <div className="pull-left">
                                     <div className="row-filter">
-                                        <a href="#">
+                                        <a href="/">
                                             <i className="fa fa-th-large" />
                                         </a>
-                                        <a href="#" className="active">
+                                        <a href="/" className="active">
                                             <i className="fa fa-bars" />
                                         </a>
                                     </div>

@@ -7,6 +7,7 @@ import { inserInCart } from '../../store/Action/cartAction';
 import { connect } from 'react-redux';
 import Review from './review';
 import moment from 'moment';
+import { socket } from '../../sockets';
 class SingleProduct extends Component {
 
     state = {
@@ -52,6 +53,10 @@ class SingleProduct extends Component {
         if (!token) {
             // this.props.history.push('/login');
         }
+        socket.emit('cl', { _id: '8237r89weufosd' })
+        socket.on('bk', (data) => {
+            console.log(data);
+        })
         axios.put(`/api/product/cart/${_id}`, {}, { headers })
             .then(res => {
                 if (res.data.success) {
@@ -102,7 +107,7 @@ class SingleProduct extends Component {
                 </div>
             )
         })
-        sumRating = Math.round(sumRating/reviews.length);
+        sumRating = Math.round(sumRating / reviews.length);
         console.log(sumRating);
         return (
             <div className="section">

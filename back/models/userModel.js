@@ -48,9 +48,8 @@ const userSchema = new Schema(
 );
 userSchema.pre("validate", async function (next) {
   const { username, email, phone, password, passwordConfirmation } = this;
+  console.log(this);
   const err = {};
-  console.log(phone);
-
   if (!isEmail(email)) {
     err.email = "invalid email";
   }
@@ -71,14 +70,16 @@ userSchema.pre("validate", async function (next) {
   }
 
   if (password !== passwordConfirmation) {
-    console.log(password, passwordConfirmation);
     err.password = "password must match";
   }
 
-  const res = await User.findOne({ email });
-  if (res) {
-    err.email = "email already taken";
-  }
+  User.findOne({ email })
+    .then(res=>{
+      if (res) {
+        err.email = "email already taken";
+      }
+    })
+  // const res = await User.findOne({ email })
   if (Object.values(err).length) {
     return next(err);
   }
@@ -87,6 +88,7 @@ userSchema.pre("validate", async function (next) {
 userSchema.methods.comparePassword = function (password, next) {
   bcrypt.compare(password, this.password, function (err, isMatch) {
     if (err) return next(err);
+    // console.log(isMatch);
     return next(null, isMatch);
   });
 };

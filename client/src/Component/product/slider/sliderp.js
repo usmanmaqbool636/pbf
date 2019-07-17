@@ -16,7 +16,7 @@ export default function slider(props) {
                     {props.images.map(img => {
                         return (
                             <li>
-                                <img src={img} alt="image"/>
+                                <img src={img} alt=" "/>
                                 {/* <div className="ism-caption ism-caption-0">
                                     My slide caption text
                             </div> */}

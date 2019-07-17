@@ -85,13 +85,31 @@ Router.post("/create", login, (req, res) => {
     });
 });
 Router.delete("/:id", login, authentic, (req, res) => {
-  Product.findByIdAndDelete(req.params.id).then(p => {
-    if (p) {
-      res.status(200).json({
-        message: "product deleted"
-      });
+  Product.findById(req.params.id, (err, p) => {
+    if (!err) {
+      p.remove()
+        .then(doc => {
+          return res.status(200).json({
+            success:true,
+            message: "product deleted"
+          })
+        })
     }
-  });
+    else{
+      console.log('err==>>',err);
+      return res.status(200).json({
+        success:false,
+        message: "product not deleted"
+      })
+    }
+  })
+  // Product.findByIdAndDelete(req.params.id).then(p => {
+  //   if (p) {
+  //     res.status(200).json({
+  //       message: "product deleted"
+  //     });
+  //   }
+  // });
 });
 Router.get("/latest", (req, res) => {
   Product.find({}, (err, p) => {
@@ -146,7 +164,7 @@ Router.put("/cart/:id", login, (req, res) => {
         .select('cart')
         .populate({ path: 'cart', model: 'Product' })
         .then(docs => {
-          res.status(200).json({
+          return res.status(200).json({
             success: true,
             message: "product added to cart",
             cart: docs.cart

@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 class Product extends Component {
     state = {
         url: '',
+        open: false
     }
     componentDidMount() {
         const { ImageUrl } = this.props;
@@ -25,9 +26,17 @@ class Product extends Component {
         }
         axios.put(`/api/product/cart/${_id}`, {}, { headers })
             .then(res => {
-                if (res.data.success)
-                this.setState({ message: res.data.message })
-                this.props.inserInCart(res.data.cart);
+                if (res.data.success) {
+                    this.setState({ message: res.data.message })
+                    this.props.inserInCart(res.data.cart);
+                }
+                else {
+                    this.setState({ message: res.data.message, open: true });
+                    setTimeout(() => {
+                        this.setState({ message: "", open: false });
+                    }, 2500);
+                    console.log(res.data);
+                }
 
             })
     }
@@ -41,7 +50,7 @@ class Product extends Component {
                         <button className="main-btn quick-view">
                             <i className="fa fa-search-plus" /> Quick view
                       </button>
-                        <img src={url} alt />
+                        <img src={url} alt="" />
                     </div>
                     <div className="product-body">
                         <h3 className="product-price">
@@ -56,7 +65,7 @@ class Product extends Component {
                             <i className="fa fa-star-o empty" />
                         </div>
                         <h2 className="product-name">
-                            <a href="#">{name}</a>
+                            <span>{name}</span>
                         </h2>
                         <div className="product-btns">
                             <button className="main-btn icon-btn">

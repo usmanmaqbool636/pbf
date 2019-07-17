@@ -15,26 +15,26 @@ export default function slider() {
             >
                 <ol>
                     <li>
-                        <img src={image1} />
+                        <img src={image1} alt="" />
                         <div className="ism-caption ism-caption-0">
                             My slide caption text
         </div>
                     </li>
                     <li>
-                        <img src={image1} />
+                        <img src={image1} alt="" />
                         <div className="ism-caption ism-caption-0">
                             My slide caption text
         </div>
                     </li>
                     <li>
-                        <img src={image1} />
+                        <img src={image1} alt="" />
 
                         <div className="ism-caption ism-caption-0">
                             My slide caption text
         </div>
                     </li>
                     <li>
-                        <img src={image1} />
+                        <img src={image1}  alt =""/>
                         <div className="ism-caption ism-caption-0">
                             My slide caption text
         </div>

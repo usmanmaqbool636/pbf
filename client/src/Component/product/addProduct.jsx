@@ -5,7 +5,7 @@ import axios from "../../axios";
 import uuid from "uuid";
 import mime from "mime-types";
 import firebase from "../../firebase";
-import { Grid, Button, Form, Header, Message, Icon, Dropdown, Transition } from "semantic-ui-react";
+import { Grid, Button, Form, Header, Message, Icon, Dropdown } from "semantic-ui-react";
 
 
 class AddProduct extends Component {

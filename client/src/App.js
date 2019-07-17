@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { connect } from "react-redux";
 import "semantic-ui-css/semantic.min.css";
 import "./App.css";
+
 import { setUser } from "./store/Action/userAction";
 
 import Home from "./Component/Home/index";
@@ -22,18 +23,24 @@ import DashBoard from "./Component/DashBoard/dashboard.jsx";
 import HOC from "./HOC";
 import ProductEdit from "./Component/product/productEdit";
 import CheckOut from './Component/Checkout/chackout';
+import AccountSetting from "./Component/Auth/accountSetting";
+import axios from './axios';
 class App extends Component {
   componentDidMount() {
+    // testing purpose
     const token = localStorage.getItem("token");
     if (token) {
       const user = jwt.decode(token.split(" ")[1]);
       user.token = token;
       this.props.setUser(user);
+      axios.get('/api/user/abc')
+        .then(res => {
+
+        })
     }
   }
   render() {
     const { user, open } = this.props;
-    console.log(this.props.history);
     return (
       <Switch>
         <Route
@@ -87,6 +94,16 @@ class App extends Component {
           </HOC>
         )} />
 
+        <Route
+          exact
+          path="/account"
+          render={() => (
+            <HOC open={open} >
+              <AccountSetting />
+            </HOC>
+          )}
+        />
+        {/* <Route path="/account" component={AccountSetting} /> */}
         <Route
           render={() => (
             <HOC open={open}>

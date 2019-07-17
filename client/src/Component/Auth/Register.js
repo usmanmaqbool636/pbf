@@ -57,12 +57,12 @@ class Register extends Component {
       phone,
       role
     };
-
+    this.setState({ loading: true, errors: {} })
     axios.post("/api/user/register", user).then(res => {
       if (!res.data.success) {
-        this.setState({ errors: res.data.err });
+        this.setState({ errors: res.data.err, loading: false });
       } else {
-        this.setState({ errors: {} });
+        this.setState({ errors: {}, loading: false });
         localStorage.setItem("token", `bearer ${res.data.token}`);
         this.props.setUser(res.data);
         if (this.props.history.length < 2) {
@@ -186,12 +186,20 @@ class Register extends Component {
               </Button>
             </Form>
           </Segment>
+          {Object.keys(errors).length > 0 && (
+            < Message error>
+              <Message.Header content="Error" />
+              {Object.keys(errors).map((e,i)=>(
+                <Message.Item content={errors[e]} />
+              ))}
+            </Message>)
+          }
 
           <Message>
             Already a User? <Link to="/login"> Login </Link>
           </Message>
         </Grid.Column>
-      </Grid>
+      </Grid >
     );
   }
 }

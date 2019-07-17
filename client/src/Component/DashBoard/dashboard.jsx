@@ -1,6 +1,6 @@
 import React from "react";
-import { Link, Route } from 'react-router-dom';
-import { Tab, Sidebar, Icon, Menu, Segment, Header, Image } from "semantic-ui-react";
+// import { Link, Route } from 'react-router-dom';
+import { Tab } from "semantic-ui-react";
 import MyProduct from "./myProduct";
 const panes = [
   { menuItem: "Overview", render: () => <Tab.Pane>Overview Content</Tab.Pane> },

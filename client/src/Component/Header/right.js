@@ -10,7 +10,7 @@ import { deleteFromCart, inserInCart } from '../../store/Action/cartAction';
 class Right extends Component {
 
     state = {
-        cart: [],
+        cart: []
     }
     componentDidMount() {
         const token = localStorage.getItem("token");
@@ -29,6 +29,7 @@ class Right extends Component {
         const storageRef = firebase.storage().ref(`/products`);
         storageRef.child(`/${ImageUrl}.jpg`).getDownloadURL().then((url) => {
             document.getElementById(_id).src = url;
+
         })
     }
     LogoutHandler = () => {
@@ -50,12 +51,12 @@ class Right extends Component {
 
     render() {
 
-        const { user,cart } = this.props;
+        const { user, cart } = this.props;
         // const { cart } = this.state;
         let sum = 0;
         const displayCart = cart.map(c => {
             sum = sum + c.price;
-            const url = this.loadImages(c.imagespath[0], c._id)
+            this.loadImages(c.imagespath[0], c._id)
             return (
                 <div className="product product-widget" key={c._id}>
                     <div className="product-thumb">

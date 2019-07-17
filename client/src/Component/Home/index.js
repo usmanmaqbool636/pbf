@@ -1,8 +1,8 @@
 import React from 'react';
 import Slider from './slider';
-import banner1 from '../../Assests/img/banner01.jpg'
-import banner2 from '../../Assests/img/banner02.jpg'
-import banner3 from '../../Assests/img/banner03.jpg'
+// import banner1 from '../../Assests/img/banner01.jpg'
+// import banner2 from '../../Assests/img/banner02.jpg'
+// import banner3 from '../../Assests/img/banner03.jpg'
 import { Grid } from 'semantic-ui-react';
 
 export default function index() {

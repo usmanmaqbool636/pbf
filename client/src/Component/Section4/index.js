@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import product1 from '../../Assests/img/product01.jpg'
-import product2 from '../../Assests/img/product02.jpg'
-import product3 from '../../Assests/img/product03.jpg'
-import product4 from '../../Assests/img/product04.jpg'
-import product5 from '../../Assests/img/product05.jpg'
-import product6 from '../../Assests/img/product06.jpg'
-import product7 from '../../Assests/img/product07.jpg'
-import banner15 from '../../Assests/img/banner15.jpg';
 import axios from '../../axios';
 import Product from '../product/product';
+// import product1 from '../../Assests/img/product01.jpg'
+// import product2 from '../../Assests/img/product02.jpg'
+// import product3 from '../../Assests/img/product03.jpg'
+// import product4 from '../../Assests/img/product04.jpg'
+// import product5 from '../../Assests/img/product05.jpg'
+// import product6 from '../../Assests/img/product06.jpg'
+// import product7 from '../../Assests/img/product07.jpg'
+// import banner15 from '../../Assests/img/banner15.jpg';
 
 
 
@@ -16,13 +16,12 @@ import Product from '../product/product';
 class LatestProduct extends Component {
     state = {
         latestProduct: [],
-        pickedProduct: []
+        pickedProduct: [],
     }
     componentDidMount() {
         axios.get('/api/product/latest')
             .then(res => {
                 this.setState({ latestProduct: res.data })
-                console.log(res.data)
             })
         axios.get('/api/product/picked')
             .then(res => {
@@ -31,11 +30,12 @@ class LatestProduct extends Component {
     }
     render() {
         const { latestProduct, pickedProduct } = this.state;
-        const displayLatestProducts = latestProduct.map((p, i) => {
-            return <Product {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
+        let displayLatestProducts, displayPickedProducts;
+        displayLatestProducts = latestProduct.map((p, i) => {
+            return <Product key={p._id + i} {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
         })
-        const displayPickedProducts = pickedProduct.map((p, i) => {
-            return <Product {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
+        displayPickedProducts = pickedProduct.map((p, i) => {
+            return <Product key={p._id + i} {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
         })
 
 

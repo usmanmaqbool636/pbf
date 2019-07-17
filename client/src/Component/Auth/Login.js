@@ -42,8 +42,10 @@ class Login extends Component {
 
   handleSubmit = () => {
     const { email, password } = this.state;
-    if (!email && !password) {
+    this.setState({ loading: true, errors: {} })
+    if (!email || !password) {
       this.setState({
+        loading: false,
         errors: {
           message: "both fields are requried"
         }
@@ -51,9 +53,9 @@ class Login extends Component {
     } else {
       axios.post("/api/user/login", { email, password }).then(res => {
         if (!res.data.success) {
-          this.setState({ errors: res.data });
+          this.setState({ errors: res.data, loading: false });
         } else {
-          this.setState({ errors: {} });
+          this.setState({ errors: {}, loading: false });
           localStorage.setItem("token", `bearer ${res.data.token}`);
           this.props.setUser(res.data);
           if (this.props.history.length < 2) {
