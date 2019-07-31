@@ -75,6 +75,7 @@ class ProductPage extends Component {
         }
         return (
             <div className="section">
+                
                 {/* <div class="ui segment">
                     <div id="double" class="ui double range"></div>
                     <p id="display-d"></p>
