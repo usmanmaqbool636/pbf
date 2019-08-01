@@ -16,6 +16,7 @@ class Chackout extends Component {
         if (token) {
             const user = jwt.decode(token.split(" ")[1]);
             user.token = token;
+            this.setState({ email: user.email, userId: user.id })
             axios.get(`api/user/cart/${user._id}`, { headers })
                 .then(res => {
                     this.setState({ cart: res.data[0].cart })
@@ -56,10 +57,19 @@ class Chackout extends Component {
     handleSubmit = (evt) => {
         evt.preventDefault();
         const { cart } = this.props;
-        cart.forEach(c => {
-            console.log(c)
-            socket.emit('placeorder', { vendor: c.vendor });
-        });
+        const { userId } = this.state;
+        const token = localStorage.getItem("token");
+        const headers = { Authorization: token };
+        if (cart.length>0){
+            axios.post('/api/product/order', { cart, userId }, { headers })
+                .then(res => {
+                    console.log(res);
+                })
+        }
+        else{
+            this.setState({message:"cart is empty"})
+            console.log('cart is empty');
+        }
     }
     render() {
         const { cart } = this.props;
@@ -83,7 +93,7 @@ class Chackout extends Component {
                     <td className="qty text-center"><input className="input" type="number" defaultValue={1} /></td>
                     <td className="total text-center"><strong className="primary-color">{c.price}</strong></td>
                     <td className="text-right">
-                        <Button circular color='google plus' icon='close' onClick={() => this.deleteFromCart(c._id)} />
+                        <Button circular type="button" color='google plus' icon='close'  onClick={() => this.deleteFromCart(c._id)} />
                     </td>
                 </tr>
             )
@@ -102,35 +112,36 @@ class Chackout extends Component {
                                         <h3 className="title">Billing Details</h3>
                                     </div>
                                     <div className="form-group">
-                                        <input className="input" type="text" name="firstname" placeholder="First Name" value={this.state.firstname} onChange={this.changeHandler} />
+                                        <input required minLength="5" maxLength="15" className="input" type="text" name="firstname" placeholder="First Name" value={this.state.firstname} onChange={this.changeHandler} />
                                     </div>
                                     <div className="form-group">
-                                        <input className="input" type="text" name="lastname" placeholder="Last Name"
+                                        <input required minLength="5" maxLength="15" className="input" type="text" name="lastname" placeholder="Last Name"
                                             value={this.state.lastname} onChange={this.changeHandler}
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <input className="input" type="email" name="email" placeholder="Email"
-                                            value={this.state.email} onChange={this.changeHandler}
+                                        <input required className="input" type="email" name="email" placeholder="Email"
+                                            value={this.state.email}
+                                        // onChange={this.changeHandler}
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <input className="input" type="text" name="address" placeholder="Address"
+                                        <input required minLength="5" maxLength="50" className="input" type="text" name="address" placeholder="Address"
                                             value={this.state.address} onChange={this.changeHandler}
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <input className="input" type="text" name="city" placeholder="City"
-                                            value={this.state.city} onChange={this.changeHandler}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <input className="input" type="text" name="country" placeholder="Country"
+                                        <input required className="input" type="text" name="province" placeholder="province"
                                             value={this.state.country} onChange={this.changeHandler}
                                         />
                                     </div>
                                     <div className="form-group">
-                                        <input className="input" type="text" name="zipcode" placeholder="ZIP Code"
+                                        <input required className="input" type="text" name="city" placeholder="City"
+                                            value={this.state.city} onChange={this.changeHandler}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <input required className="input" type="text" name="zipcode" placeholder="ZIP Code"
                                             value={this.state.zipcode} onChange={this.changeHandler}
                                         />
                                     </div>
@@ -139,17 +150,6 @@ class Chackout extends Component {
                                             value={this.state.contact} onChange={this.changeHandler}
                                         />
                                     </div>
-                                    <div className="form-group">
-                                        {/* <div className="input-checkbox">
-                                            <input type="checkbox" id="register" />
-                                            <label className="font-weak" htmlFor="register">Create Account?</label>
-                                            <div className="caption">
-                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt.
-                  </p><p>
-                                                    <input className="input" type="password" name="password" placeholder="Enter Your Password" />
-                                                </p></div>
-                                        </div> */}
-                                    </div>
                                 </div>
                             </div>
                             <div className="col-md-6">
@@ -157,14 +157,6 @@ class Chackout extends Component {
                                     <div className="section-title">
                                         <h4 className="title">Shiping Methods</h4>
                                     </div>
-                                    {/* <div className="input-checkbox">
-                                        <input type="radio" name="shipping" id="shipping-1" defaultChecked />
-                                        <label htmlFor="shipping-1">Free Shiping -  $0.00</label>
-                                        <div className="caption">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p><p>
-                                            </p></div>
-                                    </div> */}
                                     <div className="input-checkbox">
                                         <input type="radio" name="shipping" id="shipping-2" checked />
                                         <label htmlFor="shipping-2">Standard - 250</label>
@@ -178,16 +170,7 @@ class Chackout extends Component {
                                 <div className="payments-methods">
                                     <div className="section-title">
                                         <h4 className="title">Payments Methods</h4>
-                                    </div>
-                                    {/* <div className="input-checkbox">
-                                        <input type="radio" name="payments" id="payments-1" defaultChecked />
-                                        <label htmlFor="payments-1">Direct Bank Transfer</label>
-                                        <div className="caption">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p><p>
-                                            </p></div>
-                                    </div> */}
-                                    <div className="input-checkbox">
+                                    </div>                                    <div className="input-checkbox">
                                         <input type="radio" name="payments" id="payments-2" checked />
                                         <label htmlFor="payments-2">cash on Delivery</label>
                                         <div className="caption">
@@ -196,14 +179,6 @@ class Chackout extends Component {
                                             </p>
                                         </div>
                                     </div>
-                                    {/* <div className="input-checkbox">
-                                        <input type="radio" name="payments" id="payments-3" />
-                                        <label htmlFor="payments-3">Paypal System</label>
-                                        <div className="caption">
-                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p><p>
-                                            </p></div>
-                                    </div> */}
                                 </div>
                             </div>
                             <div className="col-md-12">

@@ -90,15 +90,15 @@ Router.delete("/:id", login, authentic, (req, res) => {
       p.remove()
         .then(doc => {
           return res.status(200).json({
-            success:true,
+            success: true,
             message: "product deleted"
           })
         })
     }
-    else{
-      console.log('err==>>',err);
+    else {
+      console.log('err==>>', err);
       return res.status(200).json({
-        success:false,
+        success: false,
         message: "product not deleted"
       })
     }
@@ -189,7 +189,9 @@ Router.get('/:id', (req, res) => {
     });
   });
 });
-
+Router.post('/order', login, (req, res) => {
+  console.log(req.body);
+})
 
 
 module.exports = Router;

@@ -20,7 +20,7 @@ class Right extends Component {
             const headers = { Authorization: token };
             axios.get(`api/user/cart/${user._id}`, { headers })
                 .then(res => {
-                    this.setState({ cart: res.data[0].cart })
+                    this.setState({ cart: res.data[0].cart || 0 })
                     this.props.inserInCart(res.data[0].cart)
                 })
         }

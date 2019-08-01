@@ -17,7 +17,6 @@ class SingleProduct extends Component {
         reviews: [],
         rating: [...Array(5)]
     };
-
     componentDidMount() {
         const { id } = this.props.match.params;
         axios.get(`/api/product/:${id}`)
