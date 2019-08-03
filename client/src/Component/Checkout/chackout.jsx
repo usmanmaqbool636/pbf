@@ -20,6 +20,7 @@ class Chackout extends Component {
             axios.get(`api/user/cart/${user._id}`, { headers })
                 .then(res => {
                     this.setState({ cart: res.data[0].cart })
+                    this.setState({ user:this.props.user})
                 })
         }
 
@@ -46,10 +47,6 @@ class Chackout extends Component {
         const headers = { Authorization: token };
         axios.put(`/api/user/cart/${_id}`, {}, { headers })
             .then(res => {
-                // const cart = this.state.cart.filter(c => {
-                //     return c._id !== _id;
-                // });
-                // this.setState({ cart })
                 this.props.deleteFromCart(_id)
 
             })
@@ -57,17 +54,17 @@ class Chackout extends Component {
     handleSubmit = (evt) => {
         evt.preventDefault();
         const { cart } = this.props;
-        const { userId } = this.state;
+        const { user } = this.state;
         const token = localStorage.getItem("token");
         const headers = { Authorization: token };
-        if (cart.length>0){
-            axios.post('/api/product/order', { cart, userId }, { headers })
+        if (cart.length > 0) {
+            axios.post('/api/product/order', { cart, userId:user.id }, { headers })
                 .then(res => {
                     console.log(res);
                 })
         }
-        else{
-            this.setState({message:"cart is empty"})
+        else {
+            this.setState({ message: "cart is empty" })
             console.log('cart is empty');
         }
     }
@@ -93,7 +90,7 @@ class Chackout extends Component {
                     <td className="qty text-center"><input className="input" type="number" defaultValue={1} /></td>
                     <td className="total text-center"><strong className="primary-color">{c.price}</strong></td>
                     <td className="text-right">
-                        <Button circular type="button" color='google plus' icon='close'  onClick={() => this.deleteFromCart(c._id)} />
+                        <Button circular type="button" color='google plus' icon='close' onClick={() => this.deleteFromCart(c._id)} />
                     </td>
                 </tr>
             )
@@ -235,7 +232,8 @@ class Chackout extends Component {
 }
 const mapStateToProps = (state) => {
     return {
-        cart: state.cart
+        cart: state.cart,
+        user:state.user
     }
 }
 export default connect(mapStateToProps, { deleteFromCart })(Chackout);

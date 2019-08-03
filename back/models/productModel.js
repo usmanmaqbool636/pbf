@@ -37,6 +37,9 @@ const productSchema = new Schema(
     specification: {
       type: String
     },
+    order:{
+        
+    },
     // brand: {
     //   type: Schema.Types.ObjectId,
     //   ref: 'Brand'
