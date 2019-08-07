@@ -7,7 +7,7 @@ import axios from '../../axios';
 import { setCatSub } from '../../store/Action/productAction';
 import Product from './product';
 
-// import './product.css'
+import './product.css'
 
 
 class ProductPage extends Component {
