@@ -9,6 +9,7 @@ import { socket } from '../../sockets';
 class Chackout extends Component {
     state = {
         cart: [],
+        sum: 0
     }
     componentDidMount() {
         const token = localStorage.getItem("token");
@@ -19,18 +20,18 @@ class Chackout extends Component {
             this.setState({ email: user.email, userId: user.id })
             axios.get(`api/user/cart/${user._id}`, { headers })
                 .then(res => {
+
                     this.setState({ cart: res.data[0].cart })
-                    this.setState({ user:this.props.user})
+                    this.setState({ user: this.props.user })
                 })
         }
 
-
-        socket.on('user', ({ user }) => {
-            console.log(user._id);
-        })
-        socket.on('notuser', (user) => {
-            console.log(user)
-        })
+        // socket.on('user', ({ user }) => {
+        //     console.log(user._id);
+        // })
+        // socket.on('notuser', (user) => {
+        //     console.log(user)
+        // })
     }
 
     loadImages = (ImageUrl, _id) => {
@@ -51,14 +52,29 @@ class Chackout extends Component {
 
             })
     }
+    qtyChange = (id, e) => {
+        const { cart } = this.state;
+        const newCart = this.state.cart.map((item) => {
+            if (item._id === id) {
+                const newItem = { ...item, qty: e.target.value };
+                return newItem
+            }
+            else {
+                return item
+            }
+        })
+        console.log(newCart)
+        this.setState({ cart: newCart })
+    }
     handleSubmit = (evt) => {
         evt.preventDefault();
-        const { cart } = this.props;
-        const { user } = this.state;
+        let { cart } = this.props;
+        const { user, firstname, lastname, email, address, province, city, zipcode, contact } = this.state;
         const token = localStorage.getItem("token");
         const headers = { Authorization: token };
         if (cart.length > 0) {
-            axios.post('/api/product/order', { cart, userId:user.id }, { headers })
+            // cart=this.props.cart.map(c=>c._id);
+            axios.post('/api/product/order', { cart, userId: user.id, detail: { firstname, lastname, email, address, province, city, zipcode, contact } }, { headers })
                 .then(res => {
                     console.log(res);
                 })
@@ -68,11 +84,13 @@ class Chackout extends Component {
             console.log('cart is empty');
         }
     }
-    render() {
+    displayCart = () => {
         const { cart } = this.props;
         let sum = 0;
         const displayCart = cart.map(c => {
+            // const {sum}=this.state;
             sum = sum + c.price;
+            // this.setState({sum:sum+c.price})
             this.loadImages(c.imagespath[0], `${c._id}ab`)
             return (
                 <tr>
@@ -87,7 +105,8 @@ class Chackout extends Component {
                     <td className="price text-center"><strong>{c.price}</strong>
                         {/* <br /><del className="font-weak"><small>$40.00</small></del> */}
                     </td>
-                    <td className="qty text-center"><input className="input" type="number" defaultValue={1} /></td>
+                    <td className="qty text-center">
+                        <input className="input" type="number" min="1" defaultValue={1} id={`${c._id}`} onChange={(e) => this.qtyChange(c._id, e)} /></td>
                     <td className="total text-center"><strong className="primary-color">{c.price}</strong></td>
                     <td className="text-right">
                         <Button circular type="button" color='google plus' icon='close' onClick={() => this.deleteFromCart(c._id)} />
@@ -95,6 +114,9 @@ class Chackout extends Component {
                 </tr>
             )
         })
+        return { displayCart, sum }
+    }
+    render() {
         return (
             <div className="section">
                 {/* container */}
@@ -161,6 +183,9 @@ class Chackout extends Component {
                                             <p>
                                                 shiping via tcs or by Pakistan Post
                                             </p>
+                                            <p>
+                                                <b><i>Note: </i></b> &nbsp;&nbsp; different vendor products deliver separately
+                                            </p>
                                         </div>
                                     </div>
                                 </div>
@@ -195,13 +220,13 @@ class Chackout extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {displayCart}
+                                            {this.displayCart().displayCart}
                                         </tbody>
                                         <tfoot>
                                             <tr>
                                                 <th className="empty" colSpan={3} />
                                                 <th>SUBTOTAL</th>
-                                                <th colSpan={2} className="sub-total">{sum}</th>
+                                                <th colSpan={2} className="sub-total">{this.displayCart().sum}</th>
                                             </tr>
                                             <tr>
                                                 <th className="empty" colSpan={3} />
@@ -211,7 +236,7 @@ class Chackout extends Component {
                                             <tr>
                                                 <th className="empty" colSpan={3} />
                                                 <th>TOTAL</th>
-                                                <th colSpan={2} className="total">{sum + 250}</th>
+                                                <th colSpan={2} className="total">{this.displayCart().sum + 250}</th>
                                             </tr>
                                         </tfoot>
                                     </table>
@@ -233,7 +258,7 @@ class Chackout extends Component {
 const mapStateToProps = (state) => {
     return {
         cart: state.cart,
-        user:state.user
+        user: state.user
     }
 }
 export default connect(mapStateToProps, { deleteFromCart })(Chackout);

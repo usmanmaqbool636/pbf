@@ -2,8 +2,10 @@ import React, { Component } from "react";
 import { withRouter, Route, Switch } from "react-router-dom";
 import jwt from "jsonwebtoken";
 import { connect } from "react-redux";
-import "semantic-ui-css/semantic.min.css";
+// import "semantic-ui-css/semantic.min.css";
 import "./App.css";
+// import './css/bootstrap.min.css'
+import './Component/product/product.css'
 
 import { setUser } from "./store/Action/userAction";
 
@@ -33,10 +35,6 @@ class App extends Component {
       const user = jwt.decode(token.split(" ")[1]);
       user.token = token;
       this.props.setUser(user);
-      axios.get('/api/user/abc')
-        .then(res => {
-
-        })
     }
   }
   render() {
@@ -50,7 +48,7 @@ class App extends Component {
             return (
               <HOC open={true}>
                 <Home />
-                <Section2 />
+                {/* <Section2/> */}
                 <Section4 />
               </HOC>
             );

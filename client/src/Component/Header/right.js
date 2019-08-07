@@ -177,7 +177,6 @@ class Right extends Component {
                                     {displayCart}
                                 </div>
                                 <div className="shopping-cart-btns">
-                                    {/* <button className="main-btn">View Cart</button> */}
                                     <button className="main-btn" onClick={() => this.props.history.push('/checkout')}>
                                         Checkout and view cart <i className="fa fa-arrow-circle-right" />
                                     </button>

@@ -7,6 +7,9 @@ import axios from '../../axios';
 import { setCatSub } from '../../store/Action/productAction';
 import Product from './product';
 
+// import './product.css'
+
+
 class ProductPage extends Component {
     state = {
         category: [],
@@ -93,7 +96,7 @@ class ProductPage extends Component {
                         {/* MAIN */}
                         <div id="main" className="col-md-9">
                             {/* store top filter */}
-                            <div className="store-filter clearfix">
+                            {/* <div className="store-filter clearfix">
                                 <div className="pull-left">
                                     <div className="row-filter">
                                         <a href="/">
@@ -142,7 +145,7 @@ class ProductPage extends Component {
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
+                            </div> */}
                             {/* /store top filter */}
                             {/* STORE */}
                             <div id="store">
@@ -155,7 +158,7 @@ class ProductPage extends Component {
                             </div>
                             {/* /STORE */}
                             {/* store bottom filter */}
-                            <div className="store-filter clearfix">
+                            {/* <div className="store-filter clearfix">
                                 <div className="pull-left">
                                     <div className="row-filter">
                                         <a href="#">
@@ -204,7 +207,7 @@ class ProductPage extends Component {
                                         </li>
                                     </ul>
                                 </div>
-                            </div>
+                            </div> */}
                             {/* /store bottom filter */}
                         </div>
                         {/* /MAIN */}

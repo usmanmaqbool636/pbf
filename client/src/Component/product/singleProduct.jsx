@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import Review from './review';
 import moment from 'moment';
 import { socket } from '../../sockets';
+import { Image } from 'semantic-ui-react';
 import BreadCrums from '../breadcrums';
 class SingleProduct extends Component {
 
@@ -128,7 +129,24 @@ class SingleProduct extends Component {
                                                 )
 
                                             })} */}
-                                            <Slider images={images} />
+                                            {/* <Slider images={images} /> */}
+                                            <Image
+                                                as='div'
+                                                alt={product.name + '1/2'}
+                                                size='large'
+                                                src={images[0]}
+                                                rounded
+                                            />
+                                            {images[1] && (
+                                                <Image
+                                                    as='div'
+                                                    alt={product.name +"2/2"}
+                                                    size='large'
+                                                    src={images[1]}
+                                                    rounded
+                                                />
+                                                )
+                                            }
                                         </div>
 
                                     </div>

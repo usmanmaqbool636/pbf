@@ -2,7 +2,7 @@ import React from 'react';
 import { Slider } from 'react-semantic-ui-range';
 import { Label, Radio, List } from 'semantic-ui-react';
 
-
+// import '../product.css'
 
 export default function aside(props) {
     return (
@@ -91,7 +91,7 @@ export default function aside(props) {
                     step: 1,
                     onChange: props.FilterChange
                 }}
-                 />
+                />
 
                 <Label color="red">{props.value[0]}</Label>
                 {"--"}

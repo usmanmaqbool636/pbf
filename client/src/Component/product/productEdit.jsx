@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Message, Button, Icon, Grid, Header } from "semantic-ui-react";
+import { Form, Message, Button, Icon, Grid, Header, Transition } from "semantic-ui-react";
 import { connect } from "react-redux";
 import axios from "../../axios";
 
@@ -13,9 +13,10 @@ class ProductEdit extends Component {
     errors: {},
     loading: false,
     images: [],
-    imagespath: []
-
-    // message: '',
+    imagespath: [],
+    message: '',
+    success: "",
+    loading: false,
     // storageRef: firebase.storage().ref(),
     // loading: false,
     // user: this.props.currentUser,
@@ -39,14 +40,14 @@ class ProductEdit extends Component {
   };
   handleSubmit = () => {
     const id = this.props.match.params.id;
-
     const {
       name,
       price,
       desription,
       category,
       subcategory,
-      imagespath
+      imagespath,
+       loading
     } = this.state;
     const product = {
       name,
@@ -57,8 +58,25 @@ class ProductEdit extends Component {
       imagespath
     };
     const headers = { Authorization: this.props.token };
+    this.setState({loading:true})
+
     axios.put(`/api/product/${id}`, product, { headers }).then(res => {
-      console.log(res.data);
+      if (res.data.success) {
+        this.setState(
+          { 
+            success: res.data.success, 
+            message: res.data.message,
+            loading:false 
+          }
+        );
+        setTimeout(() => {
+          this.setState({ success: false, message: '' })
+          // this.setState({ name: "", desription: "", price: "", category: "", subcategory: "",image:[] })
+        }, 3000);
+      }
+      else{
+        this.setState({loading:false})
+      }
     });
   };
   render() {
@@ -69,11 +87,21 @@ class ProductEdit extends Component {
       category,
       subcategory,
       errors,
-      loading
+      loading,
+      success,
+      message
     } = this.state;
     return (
       <Grid container textAlign="center">
         <Grid.Column computer={8} mobile={16} tablet={10}>
+          <div style={{ textAlign: "center" }} >
+            <Transition visible={success} animation='scale' duration={500}>
+              <Message size="tiny" compact>
+                <Message.Header>Message </Message.Header>
+                <Message.Content>{message}</Message.Content>
+              </Message>
+            </Transition>
+          </div>
           <Header as="h1" icon color="orange" textAlign="center">
             <Icon name="connectdevelop" color="orange" />
             Create Product
@@ -88,7 +116,7 @@ class ProductEdit extends Component {
               onChange={this.handleChange}
               type="text"
               value={name}
-              // error={errors.username}
+            // error={errors.username}
             />
             <Form.Input
               fluid
@@ -99,7 +127,7 @@ class ProductEdit extends Component {
               onChange={this.handleChange}
               type="text"
               value={desription}
-              // error={errors.email || errors.message ? true : false}
+            // error={errors.email || errors.message ? true : false}
             />
             <Form.Input
               fluid
@@ -110,7 +138,7 @@ class ProductEdit extends Component {
               onChange={this.handleChange}
               type="number"
               value={price}
-              // error={errors.email || errors.message ? true : false}
+            // error={errors.email || errors.message ? true : false}
             />
 
             <Form.Input
@@ -122,7 +150,7 @@ class ProductEdit extends Component {
               onChange={this.handleChange}
               type="string"
               value={category}
-              // error={errors.password}
+            // error={errors.password}
             />
 
             <Form.Input
@@ -134,7 +162,7 @@ class ProductEdit extends Component {
               onChange={this.handleChange}
               type="string"
               value={subcategory}
-              // error={errors.password}
+            // error={errors.password}
             />
             <input
               type="file"

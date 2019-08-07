@@ -5,7 +5,7 @@ import axios from "../../axios";
 import uuid from "uuid";
 import mime from "mime-types";
 import firebase from "../../firebase";
-import { Grid, Button, Form, Header, Message, Icon, Dropdown } from "semantic-ui-react";
+import { Grid, Button, Form, Header, Message, Icon, Dropdown, Transition } from "semantic-ui-react";
 
 
 class AddProduct extends Component {
@@ -29,6 +29,7 @@ class AddProduct extends Component {
     uploadState: "",
     uploadTask: null,
     percentUploaded: 0,
+    open: false,
 
     file: null,
     authorized: ["image/jpeg", "image/png"],
@@ -138,6 +139,7 @@ class AddProduct extends Component {
     });
     const token = localStorage.getItem("token");
     const headers = { Authorization: token };
+    this.setState({ loading: true })
     axios
       .post(
         "/api/product/create",
@@ -147,15 +149,22 @@ class AddProduct extends Component {
       .then(res => {
         if (res.data.success) {
           this.setState(
-            { success: res.data.success, message: res.data.message }
+            {
+              success: res.data.success, message: res.data.message,
+              loading: false
+            }
           );
           setTimeout(() => {
             this.setState({ success: false, message: '' })
+            this.setState({ name: "", desription: "", price: "", category: "", subcategory: "", image: [] })
           }, 3000);
-          console.log(res.data)
+        }
+        else{
+        this.setState({loading:false})
         }
       })
       .catch(err => {
+        this.setState({loading:false})
         console.log("err=>>>", err);
       });
   };
@@ -176,11 +185,19 @@ class AddProduct extends Component {
       cat, subcat, images,
       success,
       message,
-      brand
+      brand,
     } = this.state;
     return (
       <Grid container textAlign="center" container>
         <Grid.Column computer={8} mobile={16} tablet={10}>
+          <div style={{ textAlign: "center" }} >
+            <Transition visible={success} animation='scale' duration={500}>
+              <Message size="tiny" compact>
+                <Message.Header>Message </Message.Header>
+                <Message.Content>{message}</Message.Content>
+              </Message>
+            </Transition>
+          </div>
 
           <Header as="h1" icon color="orange" textAlign="center">
             <Icon name="connectdevelop" color="orange" />
@@ -196,6 +213,7 @@ class AddProduct extends Component {
               onChange={this.handleChange}
               type="text"
               value={name}
+              required
             // error={errors.username}
             />
             <Form.Input
@@ -205,6 +223,7 @@ class AddProduct extends Component {
               onChange={this.handleChange}
               type="text"
               value={desription}
+              required
             // error={errors.email || errors.message ? true : false}
             />
             <Form.Input
@@ -216,6 +235,8 @@ class AddProduct extends Component {
               onChange={this.handleChange}
               type="number"
               value={price}
+              required
+
             // error={errors.email || errors.message ? true : false}
             />
             <Form.Field
@@ -228,6 +249,8 @@ class AddProduct extends Component {
               onChange={this.handleChange1}
               options={cat}
               value={category}
+              required
+
             />
 
             {/* <Dropdown
@@ -240,6 +263,8 @@ class AddProduct extends Component {
               name="category"
             /> */}
             <Form.Field
+                          required
+
               disabled={subcat.length <= 0}
               placeholder="SubCategory"
               name="subcategory"
@@ -283,6 +308,8 @@ class AddProduct extends Component {
               id="embedpollfileinput"
               name="0"
               onChange={this.imageChangeHandler}
+              required
+              accept=".jpeg,.jpg,.png"
             />
 
             <input
@@ -292,7 +319,9 @@ class AddProduct extends Component {
               name="1"
               onChange={this.imageChangeHandler}
               disabled={images.length > 0 ? false : true}
-
+              required
+              
+              accept=".jpeg,.jpg,.png"
             />
             <input
               type="file"
@@ -301,6 +330,8 @@ class AddProduct extends Component {
               name="2"
               onChange={this.imageChangeHandler}
               disabled={images.length > 1 ? false : true}
+              
+              accept=".jpeg,.jpg,.png"
             />
             <input
               type="file"
@@ -310,6 +341,7 @@ class AddProduct extends Component {
               onChange={this.imageChangeHandler}
               disabled={images.length > 2 ? false : true}
 
+              accept=".jpeg,.jpg,.png"
             />
             <Message hidden={!success} positive floating
               header="Message"

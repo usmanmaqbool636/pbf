@@ -189,9 +189,52 @@ Router.get('/:id', (req, res) => {
     });
   });
 });
-Router.post('/order', login, (req, res) => {
-  console.log(req.body);
-})
 
+
+Router.post('/order', login, (req, res) => {
+  // console.log(req.body);
+  req.body.cart.forEach(c => {
+    User.updateOne(
+      { _id: c.vendor },
+      {
+        $push: {
+          order: {
+            productId: c._id,
+            qty: c.qty || 1,
+            deliverto: req.body.userId
+          }
+        }
+      },
+      { new: true },
+      (err, doc) => {
+        if (!err) {
+          console.log(doc)
+          // return res.status(200).json({
+          //   success: true,
+          //   message: ""
+          // });
+        }
+        console.log(err);
+        // return res.json({
+        //   success: false,
+        //   message: "User not Found"
+        // });
+      }
+    )
+
+
+    // User.findById(c.vendor)
+    //   .then(user => {
+    //     user.push({
+    //       productId: c._id,
+    //       qty: c.qty || 0,
+    //       deliverto: req.body.userId
+    //     })
+    //     user.save(r => {
+    //       console.log(r);
+    //     })
+    //   })
+  })
+})
 
 module.exports = Router;

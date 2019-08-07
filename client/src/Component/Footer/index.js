@@ -60,7 +60,7 @@ const Footer = () => {
                     </div>
                     {/* /footer widget */}
                     {/* footer widget */}
-                    <div className="col-md-3 col-sm-6 col-xs-6">
+                    {/* <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="footer">
                             <h3 className="footer-header">My Account</h3>
                             <ul className="list-links">
@@ -91,7 +91,7 @@ const Footer = () => {
                                 </li>
                             </ul>
                         </div>
-                    </div>
+                    </div> */}
                     {/* /footer widget */}
                     <div className="clearfix visible-sm visible-xs" />
                     {/* footer widget */}

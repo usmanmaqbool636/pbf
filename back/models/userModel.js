@@ -42,7 +42,22 @@ const userSchema = new Schema(
       //   type: Number,
       //   default: 0
       // }
-    }
+    },
+    order: [{
+      productId: {
+        type: Schema.Types.ObjectId,
+        ref: "Product"
+      },
+      qty: Number,
+      deliverto: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      },
+      // detail:{
+      //   type:Schema.Types.ObjectId,
+      //   ref:"Billing"
+      // }
+    }]
   },
   { timestamps: true }
 );
@@ -74,7 +89,7 @@ userSchema.pre("validate", async function (next) {
   }
 
   User.findOne({ email })
-    .then(res=>{
+    .then(res => {
       if (res) {
         err.email = "email already taken";
       }
