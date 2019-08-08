@@ -3,7 +3,7 @@ import axios from '../../axios';
 import firebase from '../../firebase';
 import { Link } from 'react-router-dom';
 import { Button, Icon, Transition, Message } from 'semantic-ui-react';
-import product from '../product/product';
+import { connect } from 'react-redux';
 class Order extends Component {
     state = {
         order: [],
@@ -25,78 +25,111 @@ class Order extends Component {
                 this.setState({ order: res.data.order })
             })
     }
-    // removefromOrder = id => {
-    //     const headers = { Authorization: this.props.user.token };
-    //     axios.delete(`/api/product/${id}`, { headers }).then(res => {
-    //         if (res.data.success) {
-    //             this.setState({ message: res.data.message, open: true });
-    //             let products = this.state.products.filter(p => {
-    //                 return p._id !== id;
-    //             });
-    //             this.setState({ products });
-    //         }
-    //         else {
-    //             this.setState({ message: res.data.message, open: true });
-    //         }
-    //         setTimeout(() => {
-    //             this.setState({ message: "", open: false });
-    //         }, 2500);
-    //     });
-    // };
+
     loadImages = (path, id) => {
+        const { products } = this.state;
         const storageRef = firebase.storage().ref(`/products`);
         storageRef.child(`/${path}.jpg`).getDownloadURL().then(url => {
-            // return url;
+            const newProduct = products.map(p => {
+                if (p._id === id) {
+                    return { ...p, image: url }
+                }
+                else {
+                    return { ...p }
+                }
+            })
             document.getElementById(id).src = url
         })
     }
-    render() {
-        const { order, open, message, products } = this.state;
-        const displayProducts = products.map((product, i) => {
+    removefromOrder = id => {
+        const headers = { Authorization: this.props.user.token };
+        axios.delete(`/api/product/order/${id}`, { headers }).then(res => {
+            if (res.data.success) {
+                this.setState({ message: res.data.message, open: true });
+                let products = this.state.products.filter(p => {
+                    return p._id !== id;
+                });
+                this.setState({ products });
+            }
+            else {
+                this.setState({ message: res.data.message, open: true });
+            }
+            setTimeout(() => {
+                this.setState({ message: "", open: false });
+            }, 2500);
+        });
+    };
+    deliver = (id) => {
+        axios.post(`/api/product/order/${id}`)
+            .then(res => {
+                if (res.data.success) {
+                    this.setState({ message: res.data.message, open: true });
+                    let products = this.state.products.filter(p => {
+                        return p._id !== id;
+                    });
+                    this.setState({ products });
+                }
+                else {
+                    this.setState({ message: res.data.message, open: true });
+                }
+                setTimeout(() => {
+                    this.setState({ message: "", open: false });
+                }, 2500);
+            });
+}
+render() {
+    const { order, open, message, products } = this.state;
+    const displayProducts = products.map((product, i) => {
+        if (product.imagespath) {
+            this.loadImages(product.imagespath[0], product._id)
+        }
 
-            // this.loadImages(product.imagespath[0], product._id + 'img')
-
-            return (
-                <div className="product product-single" key={product._id + i} style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
-                    <div className="product-thumb">
-                        <button className="main-btn quick-view"><i className="fa fa-search-plus" /> Quick view</button>
-                        {/* <img id={product._id + 'img'} alt="img" /> */}
+        return (
+            <div className="product product-single" key={product._id + i} style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
+                <div className="product-thumb">
+                    <button className="main-btn quick-view"><i className="fa fa-search-plus" /> Quick view</button>
+                    <img src={product.image} alt="img" />
+                </div>
+                <div className="product-body">
+                    <h3 className="product-price">{product.price} pkr</h3>
+                    <div className="product-rating">
+                        <i className="fa fa-star" />
+                        <i className="fa fa-star" />
+                        <i className="fa fa-star" />
+                        <i className="fa fa-star" />
+                        <i className="fa fa-star-o empty" />
                     </div>
-                    <div className="product-body">
-                        <h3 className="product-price">{product.price} pkr</h3>
-                        <div className="product-rating">
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star-o empty" />
-                        </div>
-                        <h2 className="product-name">{product.name}</h2>
-                        <div className="product-btns">
-                            {/* <Link to={`/edit/${product._id}`}> */}
-                            <Button color="blue"> <Icon name="edit" /> discard </Button>
-                            {/* </Link> */}
+                    <h2 className="product-name">{product.name}</h2>
+                    <div className="product-btns">
+                        {/* <Link to={`/edit/${product._id}`}> */}
+                        <Button negative color="blue" onClick={()=>this.deliver(product._id)}> <Icon name="send" /> Deliver this product </Button>
+                        {/* </Link> */}
 
-                            <Button negative onClick={() => this.removefromOrder(product._id)}>
-                                <Icon name="delete" />
-                                Deliver this product
+                        <Button onClick={() => this.removefromOrder(product._id)}>
+                            <Icon name="delete" />
+                            discard
                             </Button>
-                        </div>
                     </div>
                 </div>
-            )
-        })
-        return (
-            <div style={{ textAlign: "center" }} >
-                <Transition visible={open} animation='scale' duration={500}>
-                    <Message size="tiny" compact>
-                        <Message.Header>Message </Message.Header>
-                        <Message.Content>{message}</Message.Content>
-                    </Message>
-                </Transition>
-                {displayProducts}
             </div>
-        );
+        )
+    })
+    return (
+        <div style={{ textAlign: "center" }} >
+            <Transition visible={open} animation='scale' duration={500}>
+                <Message size="tiny" compact>
+                    <Message.Header>Message </Message.Header>
+                    <Message.Content>{message}</Message.Content>
+                </Message>
+            </Transition>
+            {displayProducts}
+        </div>
+    );
+}
+}
+const mapDispatchToProps = (state) => {
+    return {
+        user: state.user
     }
 }
-export default Order;
+export default connect(mapDispatchToProps)(Order);

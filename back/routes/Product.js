@@ -87,7 +87,7 @@ Router.post("/create", login, (req, res) => {
       res.status(200).json({
         success: true,
         message: 'product created successfully',
-        product:p
+        product: p
       });
     })
     .catch(err => {
@@ -121,6 +121,62 @@ Router.delete("/:id", login, authentic, (req, res) => {
   //   }
   // });
 });
+
+Router.delete("/order/:id", login, (req, res) => {
+  User.findById(req.user, (err, p) => {
+    if (!err) {
+      console.log(p.order.length)
+      p.order.pop({ _id: req.params.id });
+      console.log(p.order.length)
+      p.save()
+        .then(p1 => {
+          console.log(p1.order.length)
+          return res.status(200).json({
+            success: true,
+            message: "order discarded"
+          })
+        })
+      // p.remove()
+
+      //   .then(doc => {
+      //     return res.status(200).json({
+      //       success: true,
+      //       message: "product deleted"
+      //     })
+      //   })
+    }
+    else {
+      console.log('err==>>', err);
+      return res.status(200).json({
+        success: false,
+        message: "product not deleted"
+      })
+    }
+  })
+});
+Router.put("/order/:id", login, (req, res) => {
+  User.findById(req.user, (err, p) => {
+    if (!err) {
+      const deliver = p.order.pop({ _id: req.params.id });
+      p.deliverProduct.push(deliver)
+      p.save()
+        .then(p1 => {
+          return res.status(200).json({
+            success: true,
+            message: "order delivered"
+          })
+        })
+    }
+    else {
+      console.log('err==>>', err);
+      return res.status(200).json({
+        success: false,
+        message: "product not deleted"
+      })
+    }
+  })
+});
+
 Router.get("/latest", (req, res) => {
   Product.find({}, (err, p) => {
     if (!err) {
@@ -195,8 +251,6 @@ Router.get('/:id', (req, res) => {
     });
   });
 });
-
-
 Router.post('/order', login, (req, res) => {
   // console.log(req.body);
   req.body.cart.forEach(c => {
@@ -207,17 +261,28 @@ Router.post('/order', login, (req, res) => {
           order: {
             productId: c._id,
             qty: c.qty || 1,
-            deliverto: req.body.userId
+            deliverto: req.body.userId,
+            detail: req.body.detail
+
           }
         }
       },
       { new: true },
       (err, doc) => {
         if (!err) {
-          // return res.status(200).json({
-          //   success: true,
-          //   message: ""
-          // });
+          User.findById(req.body.userId)
+            .then(u => {
+              if (u) {
+                u.cart=[]
+                u.save()
+                  .then(()=>{
+                    return res.status(200).json({
+                      success: true,
+                      message: ""
+                    });
+                  })
+              }
+            })
         }
         // return res.json({
         //   success: false,

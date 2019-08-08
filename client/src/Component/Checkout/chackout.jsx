@@ -54,7 +54,7 @@ class Chackout extends Component {
     }
     qtyChange = (id, e) => {
         const { cart } = this.state;
-        const newCart = this.state.cart.map((item) => {
+        const newCart = cart.map((item) => {
             if (item._id === id) {
                 const newItem = { ...item, qty: e.target.value };
                 return newItem
@@ -63,7 +63,6 @@ class Chackout extends Component {
                 return item
             }
         })
-        console.log(newCart)
         this.setState({ cart: newCart })
     }
     handleSubmit = (evt) => {
@@ -73,15 +72,14 @@ class Chackout extends Component {
         const token = localStorage.getItem("token");
         const headers = { Authorization: token };
         if (cart.length > 0) {
-            // cart=this.props.cart.map(c=>c._id);
             axios.post('/api/product/order', { cart, userId: user.id, detail: { firstname, lastname, email, address, province, city, zipcode, contact } }, { headers })
                 .then(res => {
                     console.log(res);
+                    this.setState({ firstname:"", lastname:"", email:"", address:"", province:"", city:"", zipcode:"", contact:"" })
                 })
         }
         else {
             this.setState({ message: "cart is empty" })
-            console.log('cart is empty');
         }
     }
     displayCart = () => {
@@ -241,7 +239,7 @@ class Chackout extends Component {
                                         </tfoot>
                                     </table>
                                     <div className="pull-right">
-                                        <button type="submit" className="primary-btn">Place Order</button>
+                                        <button type="submit" className="primary-btn" >Place Order</button>
                                     </div>
                                 </div>
                             </div>

@@ -43,6 +43,10 @@ const userSchema = new Schema(
       //   default: 0
       // }
     },
+    deliverProduct: [{
+      type: Schema.Types.ObjectId,
+      ref: "Product"
+    }],
     order: [{
       productId: {
         type: Schema.Types.ObjectId,
@@ -53,10 +57,10 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: "User"
       },
-      // detail:{
-      //   type:Schema.Types.ObjectId,
-      //   ref:"Billing"
-      // }
+      detail:{
+        type:Schema.Types.ObjectId,
+        ref:"Billing"
+      }
     }]
   },
   { timestamps: true }
