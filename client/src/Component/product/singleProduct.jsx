@@ -70,6 +70,7 @@ class SingleProduct extends Component {
     render() {
         const { product, images, reviews, rating } = this.state;
         let sumRating = 0;
+        // console.log
         const displayReviews = reviews.map(r => {
             sumRating = sumRating + r.rating;
             const displayRating = rating.map((_, i) => {
@@ -108,8 +109,7 @@ class SingleProduct extends Component {
                 </div>
             )
         })
-        sumRating = Math.round(sumRating / reviews.length);
-        console.log(product);
+        sumRating = Boolean(sumRating) ? Math.round(sumRating / reviews.length) : 0;
         return (
             <React.Fragment>
                 {/* <BreadCrums path={['product', product.category, product.subcategory,product._id]} /> */}
@@ -140,12 +140,12 @@ class SingleProduct extends Component {
                                             {images[1] && (
                                                 <Image
                                                     as='div'
-                                                    alt={product.name +"2/2"}
+                                                    alt={product.name + "2/2"}
                                                     size='large'
                                                     src={images[1]}
                                                     rounded
                                                 />
-                                                )
+                                            )
                                             }
                                         </div>
 
@@ -172,9 +172,9 @@ class SingleProduct extends Component {
                                             <strong>Availability:</strong> In Stock
             </p>
                                         <p>
-                                            <strong>Brand:</strong> E-SHOP
-            </p>
-                                        <div className="product-options">
+                                            <strong>Created By:</strong> {Object.entries(product).length > 0 && product.vendor.username }
+                                        </p>
+                                        {/* <div className="product-options">
                                             <ul className="size-option">
                                                 <li>
                                                     <span className="text-uppercase">Size:</span>
@@ -188,8 +188,8 @@ class SingleProduct extends Component {
                                                 <li>
                                                     <a href="#">SL</a>
                                                 </li>
-                                            </ul>
-                                            <ul className="color-option">
+                                            </ul> */}
+                                            {/* <ul className="color-option">
                                                 <li>
                                                     <span className="text-uppercase">Color:</span>
                                                 </li>
@@ -218,16 +218,16 @@ class SingleProduct extends Component {
                                                     />
                                                 </li>
                                             </ul>
-                                        </div>
+                                        </div> */}
                                         <div className="product-btns">
-                                            <div className="qty-input">
+                                            {/* <div className="qty-input">
                                                 <span className="text-uppercase">QTY: </span>
                                                 <input className="input" type="number" />
-                                            </div>
+                                            </div> */}
                                             <button className="primary-btn add-to-cart" onClick={() => this.addToCart(product._id)}>
                                                 <i className="fa fa-shopping-cart" /> Add to Cart
               </button>
-                                            <div className="pull-right">
+                                            {/* <div className="pull-right">
                                                 <button className="main-btn icon-btn">
                                                     <i className="fa fa-heart" />
                                                 </button>
@@ -237,7 +237,7 @@ class SingleProduct extends Component {
                                                 <button className="main-btn icon-btn">
                                                     <i className="fa fa-share-alt" />
                                                 </button>
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </div>

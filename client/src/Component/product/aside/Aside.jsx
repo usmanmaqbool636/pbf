@@ -8,7 +8,7 @@ export default function aside(props) {
     return (
         <div id="aside" className="col-md-3">
             {/* aside widget */}
-            <div className="aside">
+            {/* <div className="aside">
                 <h3 className="aside-title">Shop by:</h3>
                 <ul className="filter-list">
                     <li>
@@ -78,7 +78,8 @@ export default function aside(props) {
                     </li>
                 </ul>
                 <button className="primary-btn">Clear All</button>
-            </div>
+            </div> */}
+            
             {/* /aside widget */}
             {/* aside widget */}
             <div className="aside">
@@ -99,7 +100,7 @@ export default function aside(props) {
             </div>
             {/* aside widget */}
             {/* aside widget */}
-            <div className="aside">
+            {/* <div className="aside">
                 <h3 className="aside-title">Filter By Color:</h3>
                 <ul className="color-option">
                     <li>
@@ -124,10 +125,11 @@ export default function aside(props) {
                         <a href="#" style={{ backgroundColor: "#D5B47B" }} />
                     </li>
                 </ul>
-            </div>
+            </div> */}
+
             {/* /aside widget */}
             {/* aside widget */}
-            <div className="aside">
+            {/* <div className="aside">
                 <h3 className="aside-title">Filter By Size:</h3>
                 <ul className="size-option">
                     <li className="active">
@@ -140,10 +142,10 @@ export default function aside(props) {
                         <a href="#">SL</a>
                     </li>
                 </ul>
-            </div>
+            </div> */}
             {/* /aside widget */}
             {/* aside widget */}
-            <div className="aside">
+            {/* <div className="aside">
                 <h3 className="aside-title">Filter by Brand</h3>
                 <ul className="list-links">
                     <li>
@@ -159,10 +161,10 @@ export default function aside(props) {
                         <a href="#">Lacost</a>
                     </li>
                 </ul>
-            </div>
+            </div> */}
             {/* /aside widget */}
             {/* aside widget */}
-            <div className="aside">
+            {/* <div className="aside">
                 <h3 className="aside-title">Filter by Gender</h3>
 
                 <ul className="list-links">
@@ -196,7 +198,7 @@ export default function aside(props) {
                         </List.Item>
                     </List>
                 </ul>
-            </div>
+            </div> */}
             {/* /aside widget */}
             {/* aside widget */}
             <div className="aside">

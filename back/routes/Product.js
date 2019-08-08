@@ -116,22 +116,21 @@ Router.get("/latest", (req, res) => {
     if (!err) {
       res.status(200).json(p);
     }
-  }).sort({ createdAt: -1 }).limit(6);
+  })
+    .sort({ createdAt: -1 }).limit(6);
 });
 
 Router.get("/picked", (req, res) => {
   Product.find({}, (err, p) => {
     if (!err) {
-
       res.status(200).json(getMeRandomElements(p, 6));
     }
-  });
+  })
 });
 
 Router.get("/myproduct/:id", login, (req, res) => {
   Product.find({ vendor: req.user._id }, (err, doc) => {
     if (!err) {
-      console.log(doc);
       res.status(200).json({ products: doc });
     }
   });
@@ -152,7 +151,6 @@ Router.post('/sub/create', (req, res) => {
 Router.get('/:category/:sub', (req, res) => {
   Product.find({ 'subcategory': req.params.sub })
     .then(docs => {
-      console.log(docs)
       res.status(200).json(docs);
     })
 })
@@ -180,8 +178,13 @@ Router.get('/:id', (req, res) => {
   if (id[0] === ':') {
     i = id.split(':')[1];
   }
-  Product.findById(i).then(p => {
+  Product.findById(i).populate({
+    path: 'vendor',
+    model: 'User',
+    select: { 'username': 1 },
+  }).then(p => {
     if (p) {
+      console.log(p)
       res.status(200).json(p);
     }
     res.json({
@@ -208,13 +211,11 @@ Router.post('/order', login, (req, res) => {
       { new: true },
       (err, doc) => {
         if (!err) {
-          console.log(doc)
           // return res.status(200).json({
           //   success: true,
           //   message: ""
           // });
         }
-        console.log(err);
         // return res.json({
         //   success: false,
         //   message: "User not Found"

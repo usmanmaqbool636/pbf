@@ -8,7 +8,9 @@ import { connect } from 'react-redux';
 class Product extends Component {
     state = {
         url: '',
-        open: false
+        open: false,
+        rating: [...Array(5)],
+        reviews: []
     }
     componentDidMount() {
         const { ImageUrl } = this.props;
@@ -16,7 +18,14 @@ class Product extends Component {
         storageRef.child(`/${ImageUrl}.jpg`).getDownloadURL().then((url) => {
             this.setState({ url })
             // document.getElementById(`imageUrl${i}`).src = url;
+            this.getReview();
         })
+    }
+    getReview = () => {
+        axios.get(`/api/product/review/${this.props._id}`)
+            .then(res => {
+                this.setState({ reviews: res.data })
+            })
     }
     addToCart = (_id) => {
         const token = localStorage.getItem("token");
@@ -42,7 +51,15 @@ class Product extends Component {
     }
     render() {
         const { name, price, _id, i } = this.props;
-        const { url } = this.state;
+        const { url, rating, reviews } = this.state;
+        let sumRating = reviews.reduce((total, r) => total + r.rating, 0)
+        sumRating = Boolean(sumRating) ? Math.round(sumRating / reviews.length) : 0;
+        const displaRating = rating.map((_, i) => {
+            if (sumRating > i) {
+                return <i className="fa fa-star" />
+            }
+            return <i className="fa fa-star-o empty" />
+        })
         return (
             <div className="col-md-4 col-sm-6 col-xs-6">
                 <div className="product product-single">
@@ -58,11 +75,7 @@ class Product extends Component {
                             {/* <del className="product-old-price">$45.00</del> */}
                         </h3>
                         <div className="product-rating">
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star-o empty" />
+                            {displaRating}
                         </div>
                         <h2 className="product-name">
                             <span>{name}</span>

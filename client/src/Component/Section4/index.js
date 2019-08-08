@@ -17,6 +17,7 @@ class LatestProduct extends Component {
     state = {
         latestProduct: [],
         pickedProduct: [],
+        rating: [...Array(5)]
     }
     componentDidMount() {
         axios.get('/api/product/latest')
@@ -28,10 +29,12 @@ class LatestProduct extends Component {
                 this.setState({ pickedProduct: res.data })
             })
     }
+
     render() {
-        const { latestProduct, pickedProduct } = this.state;
+        const { latestProduct, pickedProduct, rating } = this.state;
         let displayLatestProducts, displayPickedProducts;
         displayLatestProducts = latestProduct.map((p, i) => {
+            console.log(p);
             return <Product key={p._id + i} {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
         })
         displayPickedProducts = pickedProduct.map((p, i) => {

@@ -133,11 +133,11 @@ class Right extends Component {
                             </li>)}
 
 
-                            <li>
+                            {/* <li>
                                 <a href="file:///C:/Users/usman/Desktop/e-shop/index.html#">
                                     <i className="fa fa-heart-o" /> My Wishlist
-    </a>
-                            </li>
+                                </a>
+                            </li> */}
 
                             <li>
                                 <Link to="/checkout">
@@ -157,8 +157,7 @@ class Right extends Component {
                     {/* /Account */}
                     {/* Cart */}
                     <li className="header-cart dropdown default-dropdown">
-                        <a
-                            href="/"
+                        <span
                             className="dropdown-toggle"
                             data-toggle="dropdown"
                             aria-expanded="true"
@@ -170,7 +169,7 @@ class Right extends Component {
                             <strong className="text-uppercase">My Cart:</strong>
                             <br />
                             <span>{sum}</span>
-                        </a>
+                        </span>
                         <div className="custom-menu">
                             <div id="shopping-cart">
                                 <div className="shopping-cart-list">
