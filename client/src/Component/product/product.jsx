@@ -67,7 +67,7 @@ class Product extends Component {
                         <button className="main-btn quick-view">
                             <i className="fa fa-search-plus" /> Quick view
                       </button>
-                        <img src={url} alt="" />
+                        <img src={url} alt="" height="300" width="210"/>
                     </div>
                     <div className="product-body">
                         <h3 className="product-price">
