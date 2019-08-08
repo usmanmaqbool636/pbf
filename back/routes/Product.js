@@ -77,7 +77,8 @@ Router.post("/create", login, (req, res) => {
     .then(p => {
       res.status(200).json({
         success: true,
-        message: 'product created successfully'
+        message: 'product created successfully',
+        product:p
       });
     })
     .catch(err => {

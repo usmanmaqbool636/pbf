@@ -17,7 +17,7 @@ class AddProduct extends Component {
     category: "",
     subcategory: "",
     brand: '',
-    errors: {},
+    errors: [],
     loading: false,
     images: [],
     imagespath: [],
@@ -85,13 +85,14 @@ class AddProduct extends Component {
               if (downloadUrl) {
                 axios
                   .put(
-                    `/api/product/image/${this.state.res._id}`,
+                    `/api/product/image/${this.state.product._id}`,
                     { image: u, i },
                     { headers }
                   )
                   .then(res => console.log("====>>>>", res.data));
               }
             } catch (err) {
+
               this.setState({
                 errors: this.state.errors.concat(err),
                 uploadState: "error",
@@ -150,7 +151,9 @@ class AddProduct extends Component {
         if (res.data.success) {
           this.setState(
             {
-              success: res.data.success, message: res.data.message,
+              success: res.data.success,
+              product: res.data.product,
+              message: res.data.message,
               loading: false
             }
           );
@@ -159,12 +162,12 @@ class AddProduct extends Component {
             this.setState({ name: "", desription: "", price: "", category: "", subcategory: "", image: [] })
           }, 3000);
         }
-        else{
-        this.setState({loading:false})
+        else {
+          this.setState({ loading: false })
         }
       })
       .catch(err => {
-        this.setState({loading:false})
+        this.setState({ loading: false })
         console.log("err=>>>", err);
       });
   };
@@ -263,7 +266,7 @@ class AddProduct extends Component {
               name="category"
             /> */}
             <Form.Field
-                          required
+              required
 
               disabled={subcat.length <= 0}
               placeholder="SubCategory"
@@ -320,7 +323,7 @@ class AddProduct extends Component {
               onChange={this.imageChangeHandler}
               disabled={images.length > 0 ? false : true}
               required
-              
+
               accept=".jpeg,.jpg,.png"
             />
             <input
@@ -330,7 +333,7 @@ class AddProduct extends Component {
               name="2"
               onChange={this.imageChangeHandler}
               disabled={images.length > 1 ? false : true}
-              
+
               accept=".jpeg,.jpg,.png"
             />
             <input

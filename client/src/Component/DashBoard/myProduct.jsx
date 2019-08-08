@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import firebase from '../../firebase';
 import {
-  
+
   Button,
   Icon,
   Message,
@@ -44,14 +45,22 @@ class MyProduct extends Component {
       }, 2500);
     });
   };
+  loadImages = (path, id) => {
+    const storageRef = firebase.storage().ref(`/products`);
+    storageRef.child(`/${path}.jpg`).getDownloadURL().then(url => {
+      // return url;
+      document.getElementById(id).src=url
+    })
+  }
   render() {
     const { products, open, message } = this.state;
-    const displayProducts = products.map((product,i) => {
+    const displayProducts = products.map((product, i) => {
+      this.loadImages(product.imagespath[0], product._id + 'img')
       return (
-        <div className="product product-single" key={product._id+i} style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
+        <div className="product product-single" key={product._id + i} style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
           <div className="product-thumb">
             <button className="main-btn quick-view"><i className="fa fa-search-plus" /> Quick view</button>
-            <img src="https://react.semantic-ui.com/images/avatar/large/steve.jpg" alt="" />
+            <img id={product._id + 'img'} alt="img" />
           </div>
           <div className="product-body">
             <h3 className="product-price">{product.price} pkr</h3>
