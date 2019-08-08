@@ -21,7 +21,7 @@ class MyProduct extends Component {
   componentDidMount() {
     const headers = { Authorization: this.props.user.token };
     axios
-      .get(`/api/product/myproduct/123123`, { headers })
+      .get(`/api/product/myproduct`, { headers })
       .then(res => {
         this.setState({ products: res.data.products });
       })

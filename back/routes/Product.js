@@ -9,6 +9,15 @@ const Review = require('../models/reviewModel')
 const Category = require('../models/category');
 const Sub = require('../models/subCategory');
 
+
+
+Router.get("/myproduct", login, (req, res) => {
+  Product.find({ vendor: req.user._id }, (err, doc) => {
+    if (!err) {
+      res.status(200).json({ products: doc });
+    }
+  });
+});
 Router.post('/review', login, (req, res) => {
   const { name, email, review, rating, product } = req.body;
   // Product.updateMany({}, { $unset: { review: 1 } }, (err, doc) => {
@@ -129,13 +138,6 @@ Router.get("/picked", (req, res) => {
   })
 });
 
-Router.get("/myproduct/:id", login, (req, res) => {
-  Product.find({ vendor: req.user._id }, (err, doc) => {
-    if (!err) {
-      res.status(200).json({ products: doc });
-    }
-  });
-});
 Router.post('/category/create', (req, res) => {
   const category = new Category(req.body);
   category.save()
@@ -186,9 +188,9 @@ Router.get('/:id', (req, res) => {
   }).then(p => {
     if (p) {
       console.log(p)
-      res.status(200).json(p);
+      return res.status(200).json(p);
     }
-    res.json({
+    return res.json({
       message: "product not found"
     });
   });

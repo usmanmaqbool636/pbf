@@ -1,6 +1,7 @@
 const express = require("express");
 const Router = express.Router();
 const User = require("../models/userModel");
+const Product = require('../models/productModel');
 const { login } = require('../auth/index');
 
 Router.get('/abc', (req, res) => {
@@ -145,5 +146,22 @@ Router.put('/cart/:id', login, (req, res) => {
       })
     }
   })
+})
+Router.get('/order/:id', (req, res) => {
+
+  User.findById(req.params.id)
+    .then(user => {
+      // const Product = user.order.map(o => {
+        // Product.findById(user.order[0].productId)
+        //   .then(p => {
+        //     console.log(o);
+        //     if (!p) {
+        //       return false
+        //     }
+        //     return { ...p, qty: o.qty }
+        //   })
+      // })
+      res.status(200).json({ order: user.order });
+    })
 })
 module.exports = Router;
