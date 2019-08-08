@@ -125,9 +125,7 @@ Router.delete("/:id", login, authentic, (req, res) => {
 Router.delete("/order/:id", login, (req, res) => {
   User.findById(req.user, (err, p) => {
     if (!err) {
-      console.log(p.order.length)
       p.order.pop({ _id: req.params.id });
-      console.log(p.order.length)
       p.save()
         .then(p1 => {
           console.log(p1.order.length)
@@ -136,14 +134,6 @@ Router.delete("/order/:id", login, (req, res) => {
             message: "order discarded"
           })
         })
-      // p.remove()
-
-      //   .then(doc => {
-      //     return res.status(200).json({
-      //       success: true,
-      //       message: "product deleted"
-      //     })
-      //   })
     }
     else {
       console.log('err==>>', err);
@@ -251,59 +241,49 @@ Router.get('/:id', (req, res) => {
     });
   });
 });
+
+Router.delete('/empty/cart', login, (req, res) => {
+  // User.findById(req.user._id)
+  //   .then(user=>{
+  //     console.log(user)
+  //   })
+})
 Router.post('/order', login, (req, res) => {
-  // console.log(req.body);
   req.body.cart.forEach(c => {
+    const orderData = {
+      productId: c._id,
+      qty: c.qty,
+      deliverto: req.body.userId,
+      detail: req.body.detail
+    };
+
+
     User.updateOne(
       { _id: c.vendor },
       {
         $push: {
-          order: {
-            productId: c._id,
-            qty: c.qty || 1,
-            deliverto: req.body.userId,
-            detail: req.body.detail
-
-          }
+          order: orderData
         }
       },
-      { new: true },
-      (err, doc) => {
-        if (!err) {
-          User.findById(req.body.userId)
-            .then(u => {
-              if (u) {
-                u.cart=[]
-                u.save()
-                  .then(()=>{
-                    return res.status(200).json({
-                      success: true,
-                      message: ""
-                    });
-                  })
+      { new: true })
+      .then(doc => {
+        if (doc) {
+          console.log(req.user._id)
+          User.findByIdAndUpdate(req.user._id, { $set: { cart: [] } }, { new: true, upsert: true })
+            .then(user => {
+              if(user){
+                return res.json({
+                  success: true,
+                  message: "order successfully  is placed"
+                });
               }
             })
+
         }
-        // return res.json({
-        //   success: false,
-        //   message: "User not Found"
-        // });
-      }
-    )
-
-
-    // User.findById(c.vendor)
-    //   .then(user => {
-    //     user.push({
-    //       productId: c._id,
-    //       qty: c.qty || 0,
-    //       deliverto: req.body.userId
-    //     })
-    //     user.save(r => {
-    //       console.log(r);
-    //     })
-    //   })
-  })
+      })
+  }
+  )
 })
+
 
 module.exports = Router;

@@ -12,14 +12,15 @@ class Order extends Component {
     componentDidMount() {
         axios.get(`/api/user/order/${this.props.userId}`)
             .then(res => {
-                // console.log(res.data.order)
                 const { products } = this.state;
+                // console.log(res.data.order)
                 res.data.order.forEach(o => {
                     axios.get(`/api/product/${o.productId}`)
                         .then(res1 => {
-                            // console.log(res1.data, o.qty)
                             const p = { ...res1.data, qty: o.qty }
-                            this.setState({ products: products.concat(p) })
+                            products.push(p);
+                            console.log(products);
+                            this.setState({ products })
                         })
                 })
                 this.setState({ order: res.data.order })
@@ -38,7 +39,7 @@ class Order extends Component {
                     return { ...p }
                 }
             })
-            document.getElementById(id).src = url
+            this.setState({products:newProduct})
         })
     }
     removefromOrder = id => {
@@ -76,56 +77,52 @@ class Order extends Component {
                     this.setState({ message: "", open: false });
                 }, 2500);
             });
-}
-render() {
-    const { order, open, message, products } = this.state;
-    const displayProducts = products.map((product, i) => {
-        if (product.imagespath) {
-            this.loadImages(product.imagespath[0], product._id)
-        }
+    }
+    render() {
+        const { order, open, message, products } = this.state;
+        const displayProducts = products.map((product, i) => {
+            if (product.imagespath) {
+                this.loadImages(product.imagespath[0], product._id)
+            }
 
-        return (
-            <div className="product product-single" key={product._id + i} style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
-                <div className="product-thumb">
-                    <button className="main-btn quick-view"><i className="fa fa-search-plus" /> Quick view</button>
-                    <img src={product.image} alt="img" />
-                </div>
-                <div className="product-body">
-                    <h3 className="product-price">{product.price} pkr</h3>
-                    <div className="product-rating">
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star" />
-                        <i className="fa fa-star-o empty" />
+            return (
+                <div className="product product-single" key={product._id + i} style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
+                    <div className="product-thumb">
+                        <button className="main-btn quick-view"><i className="fa fa-search-plus" /> Quick view</button>
+                        <img src={product.image} alt="img" />
                     </div>
-                    <h2 className="product-name">{product.name}</h2>
-                    <div className="product-btns">
-                        {/* <Link to={`/edit/${product._id}`}> */}
-                        <Button negative color="blue" onClick={()=>this.deliver(product._id)}> <Icon name="send" /> Deliver this product </Button>
-                        {/* </Link> */}
+                    <div className="product-body">
+                        <h3 className="product-price">{product.price} pkr</h3>
+                        <div className="product-rating">
+                            <b>quantity {product.qty}</b>
+                        </div>
+                        <h2 className="product-name">{product.name}</h2>
+                        <div className="product-btns">
+                            {/* <Link to={`/edit/${product._id}`}> */}
+                            <Button negative color="blue" onClick={() => this.deliver(product._id)}> <Icon name="send" /> Deliver this product </Button>
+                            {/* </Link> */}
 
-                        <Button onClick={() => this.removefromOrder(product._id)}>
-                            <Icon name="delete" />
-                            discard
+                            <Button onClick={() => this.removefromOrder(product._id)}>
+                                <Icon name="delete" />
+                                discard
                             </Button>
+                        </div>
                     </div>
                 </div>
+            )
+        })
+        return (
+            <div style={{ textAlign: "center" }} >
+                <Transition visible={open} animation='scale' duration={500}>
+                    <Message size="tiny" compact>
+                        <Message.Header>Message </Message.Header>
+                        <Message.Content>{message}</Message.Content>
+                    </Message>
+                </Transition>
+                {displayProducts}
             </div>
-        )
-    })
-    return (
-        <div style={{ textAlign: "center" }} >
-            <Transition visible={open} animation='scale' duration={500}>
-                <Message size="tiny" compact>
-                    <Message.Header>Message </Message.Header>
-                    <Message.Content>{message}</Message.Content>
-                </Message>
-            </Transition>
-            {displayProducts}
-        </div>
-    );
-}
+        );
+    }
 }
 const mapDispatchToProps = (state) => {
     return {

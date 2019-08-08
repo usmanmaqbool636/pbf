@@ -8,7 +8,7 @@ import { deleteFromCart } from '../../store/Action/cartAction'
 import { socket } from '../../sockets';
 class Chackout extends Component {
     state = {
-        cart: [],
+        cart: this.props.cart,
         sum: 0
     }
     componentDidMount() {
@@ -34,10 +34,19 @@ class Chackout extends Component {
         // })
     }
 
-    loadImages = (ImageUrl, _id) => {
+    loadImages = (ImageUrl, id) => {
+        const { cart } = this.state;
         const storageRef = firebase.storage().ref(`/products`);
         storageRef.child(`/${ImageUrl}.jpg`).getDownloadURL().then((url) => {
-            document.getElementById(_id).src = url;
+            const newCart = cart.map(c => {
+                if (c._id === id) {
+                    return { ...c, image: url }
+                }
+                else {
+                    return { ...c }
+                }
+            })
+            this.setState({ cart: newCart })
         })
     }
     changeHandler = (evt) => {
@@ -70,12 +79,18 @@ class Chackout extends Component {
         let { cart } = this.props;
         const { user, firstname, lastname, email, address, province, city, zipcode, contact } = this.state;
         const token = localStorage.getItem("token");
+
         const headers = { Authorization: token };
+
         if (cart.length > 0) {
             axios.post('/api/product/order', { cart, userId: user.id, detail: { firstname, lastname, email, address, province, city, zipcode, contact } }, { headers })
                 .then(res => {
-                    console.log(res);
-                    this.setState({ firstname:"", lastname:"", email:"", address:"", province:"", city:"", zipcode:"", contact:"" })
+                    if (res.data.success) {
+                        console.log(res.data);
+                        this.setState({ cart: [], firstname: "", lastname: "", address: "", province: "", city: "", zipcode: "", contact: "" })
+                        axios.delete('/api/product/empty/cart', { headers })
+                            .then(res => console.log(res));
+                    }
                 })
         }
         else {
@@ -83,16 +98,16 @@ class Chackout extends Component {
         }
     }
     displayCart = () => {
-        const { cart } = this.props;
+        const { cart } = this.state;
         let sum = 0;
         const displayCart = cart.map(c => {
             // const {sum}=this.state;
             sum = sum + c.price;
             // this.setState({sum:sum+c.price})
-            this.loadImages(c.imagespath[0], `${c._id}ab`)
+            this.loadImages(c.imagespath[0], c._id)
             return (
                 <tr>
-                    <td className="thumb"><img id={`${c._id}ab`} alt=" " /></td>
+                    <td className="thumb"><img src={c.image} alt=" " /></td>
                     <td className="details">
                         <span>{c.name}</span>
                         <ul>

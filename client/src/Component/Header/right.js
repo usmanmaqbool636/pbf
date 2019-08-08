@@ -17,12 +17,14 @@ class Right extends Component {
         if (token) {
             const user = jwt.decode(token.split(" ")[1]);
             user.token = token;
-            const headers = { Authorization: token };
-            axios.get(`api/user/cart/${user._id}`, { headers })
+            if(token){
+                const headers = { Authorization: token };
+                axios.get(`api/user/cart/${user._id}`, { headers })
                 .then(res => {
                     this.setState({ cart: res.data[0].cart || 0 })
                     this.props.inserInCart(res.data[0].cart)
                 })
+            }
         }
     }
     loadImages = (ImageUrl, _id) => {
