@@ -46,21 +46,29 @@ class MyProduct extends Component {
     });
   };
   loadImages = (path, id) => {
+    const { products } = this.state;
     const storageRef = firebase.storage().ref(`/products`);
     storageRef.child(`/${path}.jpg`).getDownloadURL().then(url => {
-      // return url;
-      document.getElementById(id).src=url
+      const newProduct = products.map(p => {
+        if (p._id === id) {
+          return { ...p, image: url }
+        }
+        else {
+          return { ...p }
+        }
+      })
+      this.setState({ products: newProduct })
     })
   }
   render() {
     const { products, open, message } = this.state;
     const displayProducts = products.map((product, i) => {
-      this.loadImages(product.imagespath[0], product._id + 'img')
+      this.loadImages(product.imagespath[0], product._id)
       return (
         <div className="product product-single" key={product._id + i} style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
           <div className="product-thumb">
             <button className="main-btn quick-view"><i className="fa fa-search-plus" /> Quick view</button>
-            <img id={product._id + 'img'} alt="img" />
+            <img src={product.image} alt="img" />
           </div>
           <div className="product-body">
             <h3 className="product-price">{product.price} pkr</h3>

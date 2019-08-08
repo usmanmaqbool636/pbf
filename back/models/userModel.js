@@ -58,8 +58,6 @@ const userSchema = new Schema(
         ref: "User"
       },
       detail:{
-        type:Schema.Types.ObjectId,
-        ref:"Billing"
       }
     }]
   },
