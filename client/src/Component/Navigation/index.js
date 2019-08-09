@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
-import "./navigation.css"
 import { toogleSideBar, responsiveNave } from '../../store/Action/responsiveAction';
 import { setCatSub, setCat } from '../../store/Action/productAction';
 import { Link, withRouter } from 'react-router-dom';

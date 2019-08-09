@@ -5,7 +5,7 @@ const topHeader = () => {
         <div id="top-header">
             <div className="container">
                 <div className="pull-left">
-                    <span>Welcome to E-shop!</span>
+                    <span>Welcome to Pakistan Business Forum!</span>
                 </div>
                 {/* <div className="pull-right">
                     <ul className="header-top-links">

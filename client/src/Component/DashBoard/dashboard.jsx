@@ -12,7 +12,7 @@ const grid = { paneWidth: 13, tabWidth: 3 };
 const DashBoard = (props) => {
   const panes = [
     // { menuItem: "Overview", render: () => <Tab.Pane>Overview Content</Tab.Pane> },
-    { menuItem: "My Product", render: () => <MyProduct /> },
+    { menuItem: "My Product",active:true, render: () => <MyProduct /> },
     // props.user.role === 1 || props.user.role == 2 && { menuItem: "deliver order", render: () => <Deliver userId={props.user._id} /> },
     // { menuItem: "Selling", render: () => <Tab.Pane>Selling Content</Tab.Pane> },
     props.user.role === 1 || props.user.role == 2 && { menuItem: "order", render: () => <Order userId={props.user._id} /> },

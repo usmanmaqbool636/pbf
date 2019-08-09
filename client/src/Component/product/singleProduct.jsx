@@ -75,12 +75,12 @@ class SingleProduct extends Component {
             sumRating = sumRating + r.rating;
             const displayRating = rating.map((_, i) => {
                 if (r.rating > i) {
-                    return <i className="fa fa-star" />
+                    return <i key={i+"fa fa-star +single"} className="fa fa-star" />
                 }
-                return <i className="fa fa-star-o empty" />
+                return <i key={i+"fa not fa-star +single"} className="fa fa-star-o empty" />
             })
             return (
-                <div className="single-review">
+                <div key={r._id+'singleProduct'} className="single-review">
                     <div className="review-heading" style={{ color: 'steelblue' }}>
                         <div >
                             {/* <a href="#"> */}
@@ -137,16 +137,15 @@ class SingleProduct extends Component {
                                                 src={images[0]}
                                                 rounded
                                             />
-                                            {images[1] && (
+                                            {/* {images[1] && (
                                                 <Image
                                                     as='div'
                                                     alt={product.name + "2/2"}
                                                     size='large'
                                                     src={images[1]}
                                                     rounded
-                                                />
-                                            )
-                                            }
+                                                /> */}
+                                            
                                         </div>
 
                                     </div>
@@ -161,9 +160,9 @@ class SingleProduct extends Component {
                                             <div className="product-rating">
                                                 {rating.map((_, i) => {
                                                     if (sumRating > i) {
-                                                        return <i className="fa fa-star" />
+                                                        return <i key={i+'star'+'single'} className="fa fa-star" />
                                                     }
-                                                    return <i className="fa fa-star-o empty" />
+                                                    return <i key={i+'notstar'+'single'} className="fa fa-star-o empty" />
                                                 })}
                                             </div>
                                             <a href="#">{reviews.length} Review(s)</a>

@@ -1,15 +1,6 @@
 import React, { Component } from 'react'
 import axios from '../../axios';
 import Product from '../product/product';
-// import product1 from '../../Assests/img/product01.jpg'
-// import product2 from '../../Assests/img/product02.jpg'
-// import product3 from '../../Assests/img/product03.jpg'
-// import product4 from '../../Assests/img/product04.jpg'
-// import product5 from '../../Assests/img/product05.jpg'
-// import product6 from '../../Assests/img/product06.jpg'
-// import product7 from '../../Assests/img/product07.jpg'
-// import banner15 from '../../Assests/img/banner15.jpg';
-
 
 
 
@@ -34,13 +25,11 @@ class LatestProduct extends Component {
         const { latestProduct, pickedProduct, rating } = this.state;
         let displayLatestProducts, displayPickedProducts;
         displayLatestProducts = latestProduct.map((p, i) => {
-            console.log(p);
-            return <Product key={p._id + i} {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
+            return <Product key={p._id + 'latest'} {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
         })
         displayPickedProducts = pickedProduct.map((p, i) => {
-            return <Product key={p._id + i} {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
+            return <Product key={p._id + 'picked'} {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
         })
-
 
         return (
             <div className="section">

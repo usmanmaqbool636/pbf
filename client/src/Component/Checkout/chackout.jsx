@@ -38,15 +38,20 @@ class Chackout extends Component {
         const { cart } = this.state;
         const storageRef = firebase.storage().ref(`/products`);
         storageRef.child(`/${ImageUrl}.jpg`).getDownloadURL().then((url) => {
-            const newCart = cart.map(c => {
-                if (c._id === id) {
-                    return { ...c, image: url }
-                }
-                else {
-                    return { ...c }
-                }
-            })
-            this.setState({ cart: newCart })
+            const item = document.getElementById(id);
+            if (item) {
+                console.log(item);
+                document.getElementById(id).src = url
+            }
+            // const newCart = cart.map(c => {
+            //     if (c._id === id) {
+            //         return { ...c, image: url }
+            //     }
+            //     else {
+            //         return { ...c }
+            //     }
+            // })
+            // this.setState({ cart: newCart })
         })
     }
     changeHandler = (evt) => {
@@ -104,10 +109,15 @@ class Chackout extends Component {
             // const {sum}=this.state;
             sum = sum + c.price;
             // this.setState({sum:sum+c.price})
-            this.loadImages(c.imagespath[0], c._id)
+            this.loadImages(c.imagespath[0], c._id+'checkout')
             return (
                 <tr>
-                    <td className="thumb"><img src={c.image} alt=" " /></td>
+                    <td className="thumb">
+                        <img 
+                        // src={c.image} 
+                        id={c._id+'checkout'}
+                        alt=" " />
+                        </td>
                     <td className="details">
                         <span>{c.name}</span>
                         <ul>

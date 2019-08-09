@@ -73,7 +73,7 @@ class ProductPage extends Component {
         }
         else {
             displayProduct = filterProduct.map((p, i) => {
-                return <Product {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
+                return  <Product key={p._id+"filterProduct"} {...p} i={i} ImageUrl={p.imagespath[0]} name={p.name} price={p.price} />
             })
         }
         return (

@@ -3,6 +3,7 @@ import { Slider } from 'react-semantic-ui-range';
 import { Label, Radio, List } from 'semantic-ui-react';
 import axios from '../../../axios';
 import React, { Component } from 'react'
+import firebase from '../../../firebase';
 class Aside extends Component {
     state = {
         products: []
@@ -13,13 +14,25 @@ class Aside extends Component {
                 this.setState({ products: res.data })
             })
     }
+    loadImages = (ImageUrl, id) => {
+        const storageRef = firebase.storage().ref(`/products`);
+        storageRef.child(`/${ImageUrl}.jpg`).getDownloadURL().then((url) => {
+            const item = document.getElementById(id);
+            if (item) {
+                document.getElementById(id).src = url
+            }
+        })
+    }
     render() {
         const { products } = this.state;
         const displayProduct = products.map(p => {
+            this.loadImages(p.imagespath[0], p._id+'aside')
             return (
                 <div className="product product-widget" key={p._id}>
                     <div className="product-thumb">
-                        <img src="./img/thumb-product01.jpg" alt="img" />
+                        <img  
+                            id={p._id+'aside'}
+                        alt="img" />
                     </div>
                     <div className="product-body">
                         <h2 className="product-name">

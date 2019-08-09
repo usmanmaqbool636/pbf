@@ -17,13 +17,13 @@ class Right extends Component {
         if (token) {
             const user = jwt.decode(token.split(" ")[1]);
             user.token = token;
-            if(token){
+            if (token) {
                 const headers = { Authorization: token };
                 axios.get(`api/user/cart/${user._id}`, { headers })
-                .then(res => {
-                    this.setState({ cart: res.data[0].cart || 0 })
-                    this.props.inserInCart(res.data[0].cart)
-                })
+                    .then(res => {
+                        this.setState({ cart: res.data[0].cart || 0 })
+                        this.props.inserInCart(res.data[0].cart)
+                    })
             }
         }
     }
@@ -100,7 +100,8 @@ class Right extends Component {
                                 <i className="fa fa-user-o" />
                             </div>
                             <strong className="text-uppercase">
-                                {user.username ? `${user.username} ` : 'My Account'} <i className="fa fa-caret-down" />
+                                {user.username ? `${user.username} ` : 'My Account'}
+                                <i className="fa fa-caret-down" />
                             </strong>
                         </div>
                         {!Object.entries(user).length > 0 && (

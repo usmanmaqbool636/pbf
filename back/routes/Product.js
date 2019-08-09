@@ -199,8 +199,8 @@ Router.get("/latest", (req, res) => {
 Router.get("/picked", (req, res) => {
   Product.find({}, (err, p) => {
     if (!err) {
-      // res.status(200).json(getMeRandomElements(p, 6));
-      res.status(200).json(p);
+      res.status(200).json(getMeRandomElements(p, 6));
+      // res.status(200).json(p);
 
     }
   }).limit(6);

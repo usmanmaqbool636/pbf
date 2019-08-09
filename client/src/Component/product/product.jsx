@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 import axios from '../../axios';
 import { inserInCart } from '../../store/Action/cartAction';
 import { connect } from 'react-redux';
-
 class Product extends Component {
     state = {
         url: '',
@@ -56,9 +55,9 @@ class Product extends Component {
         sumRating = Boolean(sumRating) ? Math.round(sumRating / reviews.length) : 0;
         const displaRating = rating.map((_, i) => {
             if (sumRating > i) {
-                return <i className="fa fa-star" />
+                return <i key={i+'star'} className="fa fa-star" />
             }
-            return <i className="fa fa-star-o empty" />
+            return <i key={i+'notstar'} className="fa fa-star-o empty" />
         })
         return (
             <div className="col-md-4 col-sm-6 col-xs-6">
@@ -67,7 +66,12 @@ class Product extends Component {
                         <button className="main-btn quick-view">
                             <i className="fa fa-search-plus" /> Quick view
                       </button>
-                        <img src={url} alt="" height="300" width="210"/>
+                        <img 
+                        src={url} 
+                        alt="" 
+                        height="300" 
+                        width="210"
+                        />
                     </div>
                     <div className="product-body">
                         <h3 className="product-price">
@@ -81,12 +85,12 @@ class Product extends Component {
                             <span>{name}</span>
                         </h2>
                         <div className="product-btns">
-                            <button className="main-btn icon-btn">
+                            {/* <button className="main-btn icon-btn">
                                 <i className="fa fa-heart" />
                             </button>
                             <button className="main-btn icon-btn">
                                 <i className="fa fa-exchange" />
-                            </button>
+                            </button> */}
                             <button className="primary-btn add-to-cart" onClick={() => this.addToCart(_id)}>
                                 <i className="fa fa-shopping-cart" /> Add to
                                 Cart

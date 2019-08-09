@@ -30,15 +30,19 @@ class Order extends Component {
         const { products } = this.state;
         const storageRef = firebase.storage().ref(`/products`);
         storageRef.child(`/${path}.jpg`).getDownloadURL().then(url => {
-            const newProduct = products.map(p => {
-                if (p._id === id) {
-                    return { ...p, image: url }
-                }
-                else {
-                    return { ...p }
-                }
-            })
-            this.setState({ products: newProduct })
+            const item = document.getElementById(id)
+            if (item) {
+                document.getElementById(id).src = url
+            }
+            // const newProduct = products.map(p => {
+            //     if (p._id === id) {
+            //         return { ...p, image: url }
+            //     }
+            //     else {
+            //         return { ...p }
+            //     }
+            // })
+            // this.setState({ products: newProduct })
         })
     }
     removefromOrder = id => {
@@ -82,11 +86,13 @@ class Order extends Component {
         const { order, open, message, products } = this.state;
         const displayProducts = products.map((product, i) => {
             if (product.imagespath) {
-                this.loadImages(product.imagespath[0], product._id)
+                // this.loadImages(product.imagespath[0], product._id+'order')
             }
             console.log(product)
             return (
                 <Table.Row>
+                    <Table.Cell > </Table.Cell>
+
                     <Table.Cell>{product.name}</Table.Cell>
                     <Table.Cell>{product.price}</Table.Cell>
                     <Table.Cell>{product.qty}</Table.Cell>
