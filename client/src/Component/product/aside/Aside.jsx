@@ -1,14 +1,48 @@
-import React from 'react';
+
 import { Slider } from 'react-semantic-ui-range';
 import { Label, Radio, List } from 'semantic-ui-react';
-
-// import '../product.css'
-
-export default function aside(props) {
-    return (
-        <div id="aside" className="col-md-3">
-            {/* aside widget */}
-            {/* <div className="aside">
+import axios from '../../../axios';
+import React, { Component } from 'react'
+class Aside extends Component {
+    state = {
+        products: []
+    }
+    componentDidMount() {
+        axios.get('/api/product/toprated')
+            .then(res => {
+                this.setState({ products: res.data })
+            })
+    }
+    render() {
+        const { products } = this.state;
+        const displayProduct = products.map(p => {
+            return (
+                <div className="product product-widget" key={p._id}>
+                    <div className="product-thumb">
+                        <img src="./img/thumb-product01.jpg" alt="img" />
+                    </div>
+                    <div className="product-body">
+                        <h2 className="product-name">
+                            <span>{p.name}</span>
+                        </h2>
+                        <h3 className="product-price">
+                            {p.price}
+                        </h3>
+                        <div className="product-rating">
+                            <i className="fa fa-star" />
+                            <i className="fa fa-star" />
+                            <i className="fa fa-star" />
+                            <i className="fa fa-star-o empty" />
+                            <i className="fa fa-star-o empty" />
+                        </div>
+                    </div>
+                </div>
+            )
+        })
+        return (
+            <div id="aside" className="col-md-3">
+                {/* aside widget */}
+                {/* <div className="aside">
                 <h3 className="aside-title">Shop by:</h3>
                 <ul className="filter-list">
                     <li>
@@ -79,28 +113,28 @@ export default function aside(props) {
                 </ul>
                 <button className="primary-btn">Clear All</button>
             </div> */}
-            
-            {/* /aside widget */}
-            {/* aside widget */}
-            <div className="aside">
-                <h3 className="aside-title">Filter by Price</h3>
 
-                <Slider multiple color="red" settings={{
-                    start: [2, 4],
-                    min: 0,
-                    max: 20000,
-                    step: 1,
-                    onChange: props.FilterChange
-                }}
-                />
+                {/* /aside widget */}
+                {/* aside widget */}
+                <div className="aside">
+                    <h3 className="aside-title">Filter by Price</h3>
 
-                <Label color="red">{props.value[0]}</Label>
-                {"--"}
-                <Label color="red">{props.value[1]}</Label>
-            </div>
-            {/* aside widget */}
-            {/* aside widget */}
-            {/* <div className="aside">
+                    <Slider multiple color="red" settings={{
+                        start: [2, 4],
+                        min: 0,
+                        max: 20000,
+                        step: 1,
+                        onChange: this.props.FilterChange
+                    }}
+                    />
+
+                    <Label color="red">{this.props.value[0]}</Label>
+                    {"--"}
+                    <Label color="red">{this.props.value[1]}</Label>
+                </div>
+                {/* aside widget */}
+                {/* aside widget */}
+                {/* <div className="aside">
                 <h3 className="aside-title">Filter By Color:</h3>
                 <ul className="color-option">
                     <li>
@@ -127,9 +161,9 @@ export default function aside(props) {
                 </ul>
             </div> */}
 
-            {/* /aside widget */}
-            {/* aside widget */}
-            {/* <div className="aside">
+                {/* /aside widget */}
+                {/* aside widget */}
+                {/* <div className="aside">
                 <h3 className="aside-title">Filter By Size:</h3>
                 <ul className="size-option">
                     <li className="active">
@@ -143,9 +177,9 @@ export default function aside(props) {
                     </li>
                 </ul>
             </div> */}
-            {/* /aside widget */}
-            {/* aside widget */}
-            {/* <div className="aside">
+                {/* /aside widget */}
+                {/* aside widget */}
+                {/* <div className="aside">
                 <h3 className="aside-title">Filter by Brand</h3>
                 <ul className="list-links">
                     <li>
@@ -162,9 +196,9 @@ export default function aside(props) {
                     </li>
                 </ul>
             </div> */}
-            {/* /aside widget */}
-            {/* aside widget */}
-            {/* <div className="aside">
+                {/* /aside widget */}
+                {/* aside widget */}
+                {/* <div className="aside">
                 <h3 className="aside-title">Filter by Gender</h3>
 
                 <ul className="list-links">
@@ -174,8 +208,8 @@ export default function aside(props) {
                                 label='Men'
                                 name='gender'
                                 value='men'
-                                checked={props.gender === 'men'}
-                                onChange={props.handleChange}
+                                checked={this.props.gender === 'men'}
+                                onChange={this.props.handleChange}
                             />
                         </List.Item>
                         <List.Item>
@@ -183,8 +217,8 @@ export default function aside(props) {
                                 label='Women'
                                 name='gender'
                                 value='women'
-                                checked={props.gender === 'women'}
-                                onChange={props.handleChange}
+                                checked={this.props.gender === 'women'}
+                                onChange={this.props.handleChange}
                             />
                         </List.Item>
                         <List.Item>
@@ -192,61 +226,23 @@ export default function aside(props) {
                                 label='Both'
                                 name='gender'
                                 value='both'
-                                checked={props.gender === 'both'}
-                                onChange={props.handleChange}
+                                checked={this.props.gender === 'both'}
+                                onChange={this.props.handleChange}
                             />
                         </List.Item>
                     </List>
                 </ul>
             </div> */}
-            {/* /aside widget */}
-            {/* aside widget */}
-            <div className="aside">
-                <h3 className="aside-title">Top Rated Product</h3>
-                {/* widget product */}
-                <div className="product product-widget">
-                    <div className="product-thumb">
-                        <img src="./img/thumb-product01.jpg" alt />
-                    </div>
-                    <div className="product-body">
-                        <h2 className="product-name">
-                            <a href="#">Product Name Goes Here</a>
-                        </h2>
-                        <h3 className="product-price">
-                            $32.50 <del className="product-old-price">$45.00</del>
-                        </h3>
-                        <div className="product-rating">
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star-o empty" />
-                        </div>
-                    </div>
+                {/* /aside widget */}
+                {/* aside widget */}
+                <div className="aside">
+                    <h3 className="aside-title">Top Rated Product</h3>
+                    {/* widget product */}
+                    {displayProduct}
                 </div>
-                {/* /widget product */}
-                {/* widget product */}
-                <div className="product product-widget">
-                    <div className="product-thumb">
-                        <img src="./img/thumb-product01.jpg" alt />
-                    </div>
-                    <div className="product-body">
-                        <h2 className="product-name">
-                            <a href="#">Product Name Goes Here</a>
-                        </h2>
-                        <h3 className="product-price">$32.50</h3>
-                        <div className="product-rating">
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star" />
-                            <i className="fa fa-star-o empty" />
-                        </div>
-                    </div>
-                </div>
-                {/* /widget product */}
+                {/* /aside widget */}
             </div>
-            {/* /aside widget */}
-        </div>
-    )
+        )
+    }
 }
+export default Aside;

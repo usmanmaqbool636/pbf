@@ -44,6 +44,7 @@ Router.post("/register", (req, res) => {
 Router.post("/login", (req, res) => {
   User.findOne({ email: req.body.email })
     .then(user => {
+      console.log(user);
       if (!user) {
         return res.json({
           success: false,
@@ -53,7 +54,7 @@ Router.post("/login", (req, res) => {
       user.comparePassword(req.body.password, (err, isMatch) => {
         // console.log(req.body)
         if (!isMatch) {
-          // console.log(isMatch)
+          console.log(isMatch)
           return res.json({
             success: false,
             message: "incorrect Email or Password"
@@ -151,16 +152,7 @@ Router.get('/order/:id', (req, res) => {
 
   User.findById(req.params.id)
     .then(user => {
-      // const Product = user.order.map(o => {
-        // Product.findById(user.order[0].productId)
-        //   .then(p => {
-        //     console.log(o);
-        //     if (!p) {
-        //       return false
-        //     }
-        //     return { ...p, qty: o.qty }
-        //   })
-      // })
+      console.log("==>>",user.order);
       res.status(200).json({ order: user.order });
     })
 })

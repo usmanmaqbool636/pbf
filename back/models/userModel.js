@@ -43,6 +43,9 @@ const userSchema = new Schema(
       //   default: 0
       // }
     },
+    myorder: {
+
+    },
     deliverProduct: [{
       type: Schema.Types.ObjectId,
       ref: "Product"
@@ -57,7 +60,7 @@ const userSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: "User"
       },
-      detail:{
+      detail: {
       }
     }]
   },
@@ -111,7 +114,7 @@ userSchema.methods.comparePassword = function (password, next) {
 };
 userSchema.pre("save", function (next) {
   const user = this;
-  bcrypt.hash(this.password, 10, function (err, hash) {
+  bcrypt.hash(this.password, bcrypt.genSaltSync(12), function (err, hash) {
     if (err) return next(err);
     user.password = hash;
     user.passwordConfirmation = hash;

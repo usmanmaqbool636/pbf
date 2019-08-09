@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import axios from '../../axios';
 import firebase from '../../firebase';
 import { Link } from 'react-router-dom';
-import { Button, Icon, Transition, Message } from 'semantic-ui-react';
+import { Button, Icon, Transition, Message, Table } from 'semantic-ui-react';
 import { connect } from 'react-redux';
 class Order extends Component {
     state = {
@@ -13,11 +13,10 @@ class Order extends Component {
         axios.get(`/api/user/order/${this.props.userId}`)
             .then(res => {
                 const { products } = this.state;
-                // console.log(res.data.order)
                 res.data.order.forEach(o => {
                     axios.get(`/api/product/${o.productId}`)
                         .then(res1 => {
-                            const p = { ...res1.data, qty: o.qty }
+                            const p = { ...res1.data, qty: o.qty || 1, detail: o.detail }
                             products.push(p);
                             console.log(products);
                             this.setState({ products })
@@ -39,7 +38,7 @@ class Order extends Component {
                     return { ...p }
                 }
             })
-            this.setState({products:newProduct})
+            this.setState({ products: newProduct })
         })
     }
     removefromOrder = id => {
@@ -61,7 +60,8 @@ class Order extends Component {
         });
     };
     deliver = (id) => {
-        axios.post(`/api/product/order/${id}`)
+        const headers = { Authorization: this.props.user.token };
+        axios.put(`/api/product/order/${id}`, {}, { headers })
             .then(res => {
                 if (res.data.success) {
                     this.setState({ message: res.data.message, open: true });
@@ -84,7 +84,33 @@ class Order extends Component {
             if (product.imagespath) {
                 this.loadImages(product.imagespath[0], product._id)
             }
+            console.log(product)
+            return (
+                <Table.Row>
+                    <Table.Cell>{product.name}</Table.Cell>
+                    <Table.Cell>{product.price}</Table.Cell>
+                    <Table.Cell>{product.qty}</Table.Cell>
+                    <Table.Cell>{product.detail.firstname}</Table.Cell>
+                    <Table.Cell>{product.detail.address}</Table.Cell>
+                    <Table.Cell>{product.detail.province}</Table.Cell>
+                    <Table.Cell>{product.detail.city}</Table.Cell>
+                    <Table.Cell>{product.detail.zipcode}</Table.Cell>
+                    <Table.Cell>{product.detail.contact}</Table.Cell>
+                    <Table.Cell>
+                        <Button negative color="blue" onClick={() => this.deliver(product._id)}>
+                            <Icon name="send" />
+                            Deliver this product
+                    </Button>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <Button onClick={() => this.removefromOrder(product._id)}>
+                            <Icon name="delete" />
+                            discard
+                            </Button>
+                    </Table.Cell>
 
+                </Table.Row>
+            )
             return (
                 <div className="product product-single" key={product._id + i} style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
                     <div className="product-thumb">
@@ -113,13 +139,26 @@ class Order extends Component {
         })
         return (
             <div style={{ textAlign: "center" }} >
-                <Transition visible={open} animation='scale' duration={500}>
-                    <Message size="tiny" compact>
-                        <Message.Header>Message </Message.Header>
-                        <Message.Content>{message}</Message.Content>
-                    </Message>
-                </Transition>
-                {displayProducts}
+                <Table singleLine>
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.HeaderCell>Name</Table.HeaderCell>
+                            <Table.HeaderCell>price</Table.HeaderCell>
+                            <Table.HeaderCell>qty</Table.HeaderCell>
+                            {/* <Table.HeaderCell>creater</Table.HeaderCell> */}
+                            <Table.HeaderCell>deliver to</Table.HeaderCell>
+                            <Table.HeaderCell>address</Table.HeaderCell>
+                            <Table.HeaderCell>province</Table.HeaderCell>
+                            <Table.HeaderCell>city</Table.HeaderCell>
+                            <Table.HeaderCell>zipcode</Table.HeaderCell>
+                            <Table.HeaderCell>contact</Table.HeaderCell>
+                        </Table.Row>
+                    </Table.Header>
+
+                    <Table.Body>
+                        {displayProducts}
+                    </Table.Body>
+                </Table>
             </div>
         );
     }

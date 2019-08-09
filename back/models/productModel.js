@@ -40,6 +40,9 @@ const productSchema = new Schema(
     order:{
         
     },
+    myorder:{
+      
+    },
     // brand: {
     //   type: Schema.Types.ObjectId,
     //   ref: 'Brand'

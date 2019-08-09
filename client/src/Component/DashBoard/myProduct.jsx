@@ -49,6 +49,7 @@ class MyProduct extends Component {
     const { products } = this.state;
     const storageRef = firebase.storage().ref(`/products`);
     storageRef.child(`/${path}.jpg`).getDownloadURL().then(url => {
+      // products
       const newProduct = products.map(p => {
         if (p._id === id) {
           return { ...p, image: url }
@@ -62,8 +63,8 @@ class MyProduct extends Component {
   }
   render() {
     const { products, open, message } = this.state;
-    const displayProducts = products.map((product, i) => {
-      this.loadImages(product.imagespath[0], product._id)
+    const displayProducts =Boolean(products)  && products.map((product, i) => {
+      this.loadImages(product.imagespath[0], i)
       return (
         <div className="product product-single" key={product._id + i} style={{ display: "inline-block", margin: '1rem', width: "20%", }}>
           <div className="product-thumb">
@@ -101,9 +102,9 @@ class MyProduct extends Component {
     );
   }
 }
-const mapDispatchToProps = state => {
+const mapStateToProps = state => {
   return {
     user: state.user
   };
 };
-export default connect(mapDispatchToProps)(MyProduct);
+export default connect(mapStateToProps)(MyProduct);

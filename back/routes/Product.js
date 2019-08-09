@@ -11,6 +11,16 @@ const Sub = require('../models/subCategory');
 
 
 
+Router.get('/toprated', (req, res) => {
+  console.log('toprated')
+  Product.find({ "review": { $size: 3 } })
+    .limit(4)
+    .then(p => {
+      if (p) {
+        return res.status(200).json(p);
+      }
+    })
+})
 Router.get("/myproduct", login, (req, res) => {
   Product.find({ vendor: req.user._id }, (err, doc) => {
     if (!err) {
@@ -41,6 +51,15 @@ Router.get('/review/:id', (req, res) => {
       res.status(200).json(docs)
     })
 });
+Router.get('/myorder/:id', (req, res) => {
+  User.findById(req.params.id)
+    .select('myorder')
+    .populate({ path: 'myorder', model: 'Product' })
+    .then(user => {
+      console.log(user);
+      res.status(200).json({ myorder: user.myorder })
+    })
+})
 
 Router.put("/:id", login, authentic, (req, res) => {
   Product.findByIdAndUpdate(
@@ -145,9 +164,10 @@ Router.delete("/order/:id", login, (req, res) => {
   })
 });
 Router.put("/order/:id", login, (req, res) => {
-  User.findById(req.user, (err, p) => {
+  User.findById(req.user._id, (err, p) => {
     if (!err) {
       const deliver = p.order.pop({ _id: req.params.id });
+      console.log("kjashdui",deliver)
       p.deliverProduct.push(deliver)
       p.save()
         .then(p1 => {
@@ -179,9 +199,11 @@ Router.get("/latest", (req, res) => {
 Router.get("/picked", (req, res) => {
   Product.find({}, (err, p) => {
     if (!err) {
-      res.status(200).json(getMeRandomElements(p, 6));
+      // res.status(200).json(getMeRandomElements(p, 6));
+      res.status(200).json(p);
+
     }
-  })
+  }).limit(6);
 });
 
 Router.post('/category/create', (req, res) => {
@@ -241,7 +263,6 @@ Router.get('/:id', (req, res) => {
     });
   });
 });
-
 Router.delete('/empty/cart', login, (req, res) => {
   // User.findById(req.user._id)
   //   .then(user=>{
@@ -256,8 +277,6 @@ Router.post('/order', login, (req, res) => {
       deliverto: req.body.userId,
       detail: req.body.detail
     };
-
-
     User.updateOne(
       { _id: c.vendor },
       {
@@ -268,17 +287,21 @@ Router.post('/order', login, (req, res) => {
       { new: true })
       .then(doc => {
         if (doc) {
-          console.log(req.user._id)
-          User.findByIdAndUpdate(req.user._id, { $set: { cart: [] } }, { new: true, upsert: true })
-            .then(user => {
-              if(user){
-                return res.json({
-                  success: true,
-                  message: "order successfully  is placed"
-                });
-              }
+          User.findById(req.user._id)
+            .then(u => {
+              u.myorder = u.cart;
+              u.save().then(() => {
+                User.findByIdAndUpdate(req.user._id, { $set: { cart: [] } }, { new: true, upsert: true })
+                  .then(user => {
+                    if (user) {
+                      return res.json({
+                        success: true,
+                        message: "order successfully  is placed"
+                      });
+                    }
+                  })
+              })
             })
-
         }
       })
   }
