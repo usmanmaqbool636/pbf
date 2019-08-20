@@ -135,7 +135,7 @@ class Aside extends Component {
                     <Slider multiple color="red" settings={{
                         start: [2, 4],
                         min: 0,
-                        max: 20000,
+                        max: 200000,
                         step: 1,
                         onChange: this.props.FilterChange
                     }}

@@ -148,6 +148,14 @@ class Right extends Component {
     </Link>
                             </li>
                             <li>
+                                {!!Object.entries(this.props.user).length && (<li>
+                                    <Link to="/account">
+                                        <Icon name="setting"/> Account setting
+                                </Link>
+                                </li>)}
+
+                            </li>
+                            <li>
                                 {
                                     !!Object.entries(user).length &&
                                     <Button onClick={this.LogoutHandler}>
